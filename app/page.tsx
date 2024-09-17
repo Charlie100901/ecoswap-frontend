@@ -20,12 +20,12 @@ export default function Home() {
             className="absolute inset-0 w-full h-full object-cover filter brightness-[40%]"
           />
 
-          <p className="absolute inset-0 flex flex-col items-center justify-center text-white text-4xl font-bold z-40">
-            <span>Intercambia lo que Tienes,</span>
+          <p className="absolute inset-0 flex flex-col items-center justify-center text-white text-7xl z-40">
+            <span className="font-bold">Intercambia lo que Tienes,</span>
             <span>Obtén lo que Necesitas</span>
           </p>
 
-          <button className="absolute top-[60%] transform -translate-x-1/2 left-1/2 text-white bg-lime-700 hover:bg-green-700 font-semibold py-2 px-4 rounded mt-4 z-40">Empieza a Intercambiar</button>
+          <button className="absolute top-[70%] transform -translate-x-1/2 left-1/2 text-white bg-[#109C15] hover:bg-green-700 font-semibold py-2 px-4 rounded mt-4 z-40 w-[300px] h-[60px] text-xl">Empieza a Intercambiar</button>
         </div>
         {/* <QuienesSomos/> */}
 
