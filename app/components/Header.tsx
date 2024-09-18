@@ -1,18 +1,26 @@
+"use client";
 import { useState } from 'react';
 import Image from 'next/image';
+import { useRouter, usePathname } from 'next/navigation'
 
 export default function Header() {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+
 
   const toggleSubmenu = () => {
     setIsSubmenuOpen(!isSubmenuOpen);
   };
 
+  console.log(pathname)
+
+  const isActiveLink = (path: string) => pathname === path;
+
   return (
     <header className="sticky top-0 z-50">
       <nav className="bg-white border-gray-200 shadow-md">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4">
-          {/* Logo */}
           <a href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
             <Image
               src="/img/logo.png"
@@ -30,11 +38,10 @@ export default function Header() {
             </svg>
           </button>
 
-          {/* Center Links */}
           <div className="flex-grow flex justify-center">
             <ul className="flex space-x-8">
               <li>
-                <a href="/" className="block py-2 px-3 text-black bg-blue-700 rounded md:bg-transparent md:p-0 hover:text-green-600" aria-current="page">Inicio</a>
+                <a href="/" className={`block py-2 px-3 rounded md:p-0 ${isActiveLink('/') ? 'text-green-600 font-bold' : 'text-black hover:text-green-600'}`} aria-current="page">Inicio</a>
               </li>
               <li className="relative">
                 <button
@@ -52,16 +59,15 @@ export default function Header() {
                 )}
               </li>
               <li>
-                <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Publicar Producto</a>
+                <a href="/publicar-producto" className={`block py-2 px-3 rounded md:p-0 ${isActiveLink('/publicar-producto') ? 'text-green-600 font-bold' : 'text-black hover:text-green-600'}`}>Publicar Producto</a>
               </li>
             </ul>
           </div>
 
-          {/* Right Links */}
           <div className="flex items-center space-x-2 md:space-x-4">
             <a href="/login" className="text-gray-900 hover:text-green-700">Iniciar Sesión</a>
-            <span className="text-gray-500">/</span>
-            <a href="/register" className="text-gray-900 hover:text-green-700">Regístrate</a>
+            <span className="text-black">/</span>
+            <a href="/register" className="text-green-500 hover:text-green-700">Regístrate</a>
           </div>
         </div>
       </nav>

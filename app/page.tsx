@@ -4,8 +4,10 @@ import Header from './components/Header';
 import QuienesSomos from './components/QuienesSomos';
 import Footer from './components/Footer';
 import Product from './components/Product';
+import { useRouter } from 'next/navigation';
 
 export default function Home() {
+  const router = useRouter();
 
   return (
     <div>
@@ -25,12 +27,12 @@ export default function Home() {
             <span>Obtén lo que Necesitas</span>
           </p>
 
-          <button className="absolute top-[70%] transform -translate-x-1/2 left-1/2 text-white bg-[#109C15] hover:bg-green-700 font-semibold py-2 px-4 rounded mt-4 z-40 w-[300px] h-[60px] text-xl">Empieza a Intercambiar</button>
+          <button type="button" onClick={() => router.push('/product')} className="absolute top-[70%] transform -translate-x-1/2 left-1/2 text-white bg-[#109C15] hover:bg-green-700 font-semibold py-2 px-4 rounded mt-4 z-40 w-[300px] h-[60px] text-xl">Empieza a Intercambiar</button>
         </div>
         {/* <QuienesSomos/> */}
 
-        <div className="mt-5">
-          <h2 className="text-2xl font-bold mb-2">Productos Subidos Recientemente</h2>
+        <div className="mt-5 mb-28">
+          <h2 className="text-2xl font-bold mb-2 mt-10">Productos Subidos Recientemente</h2>
           <Product />
         </div>
         

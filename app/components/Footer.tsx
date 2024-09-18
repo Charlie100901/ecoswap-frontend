@@ -4,12 +4,11 @@ import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-ic
 
 export default function Footer() {
   return (
-    <footer className="bg-gray-900 text-white py-10">
+    <footer className="bg-gray-900 text-white py-10 mt-12">
       <div className="container mx-auto flex justify-between">
-        {/* Logo and Description */}
         <div className="w-1/3">
           <div className="flex items-center space-x-3">
-            <Image src="/img/logo.png" alt="Logo ecoswap" width={40} height={40} />
+            <Image src="/img/logo-blanco.png" alt="Logo ecoswap" width={40} height={40} />
             <span className="text-2xl font-semibold">EcoSwap</span>
           </div>
           <p className="mt-4 text-gray-400">
@@ -31,7 +30,6 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Links to Pages */}
         <div className="w-1/3">
           <h3 className="text-xl font-semibold mb-4">Páginas</h3>
           <ul className="space-y-2">
@@ -42,7 +40,6 @@ export default function Footer() {
           </ul>
         </div>
 
-        {/* Contact Information */}
         <div className="w-1/3">
           <h3 className="text-xl font-semibold mb-4">Contacto</h3>
           <ul className="space-y-2">
