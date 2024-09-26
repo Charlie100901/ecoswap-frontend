@@ -65,7 +65,7 @@ export default function Page() {
         </div>
 
         <div className="mb-4">
-          <p className="text-gray-600">¿Aún no tienes cuenta? <a href="#" className="text-green-700 hover:underline">Regístrate</a></p>
+          <p className="text-gray-600">¿Aún no tienes cuenta? <a href="/UploadProduct" className="text-green-700 hover:underline">Regístrate</a></p>
         </div>
 
         <button className="w-full mt-6 bg-lime-600 text-white py-2 px-4 rounded-lg hover:bg-lime-800">

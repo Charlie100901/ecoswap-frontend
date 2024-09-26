@@ -1,5 +1,8 @@
+"use client";
+
 import { useState } from 'react';
 import Image from 'next/image';
+
 
 export default function Header() {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
@@ -75,7 +78,7 @@ export default function Header() {
                 )}
               </li>
               <li>
-                <a href="#" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Publicar Producto</a>
+                <a href="/UploadProduct" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Publicar Producto</a>
               </li>
               <li>
                 <a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Iniciar Sesión</a>
