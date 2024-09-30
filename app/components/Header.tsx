@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation'
 
+
 export default function Header() {
   const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
   const router = useRouter();
@@ -59,7 +60,13 @@ export default function Header() {
                 )}
               </li>
               <li>
-                <a href="/publicar-producto" className={`block py-2 px-3 rounded md:p-0 ${isActiveLink('/publicar-producto') ? 'text-green-600 font-bold' : 'text-black hover:text-green-600'}`}>Publicar Producto</a>
+                <a href="/UploadProduct" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Publicar Producto</a>
+              </li>
+              <li>
+                <a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Iniciar Sesión</a>
+              </li>
+              <li>
+                <a href="/register" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Registrate</a>
               </li>
             </ul>
           </div>
