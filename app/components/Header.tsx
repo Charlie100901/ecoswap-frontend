@@ -1,22 +1,45 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { useRouter, usePathname } from 'next/navigation'
-
+import { useRouter, usePathname } from 'next/navigation';
 
 export default function Header() {
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState(false);
+  const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
+  const [userName, setUserName] = useState<string | null>(null); 
   const router = useRouter();
   const pathname = usePathname();
 
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+    
+    if (token) {
+      localStorage.setItem("user", "carlos");
+      const user = localStorage.getItem('user');
+      if (user) {
+        setUserName(user);
+      }
+    }
+  }, []);
 
   const toggleSubmenu = () => {
     setIsSubmenuOpen(!isSubmenuOpen);
   };
 
-  console.log(pathname)
-
   const isActiveLink = (path: string) => pathname === path;
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    setUserName(null);
+    router.push('/');
+  };
+
+  const handlePublishClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (!localStorage.getItem('token')) {
+      e.preventDefault(); 
+      router.push('/login'); 
+    }
+  };
 
   return (
     <header className="sticky top-0 z-50">
@@ -29,7 +52,7 @@ export default function Header() {
               width={40}
               height={40}
             />
-            <span className="self-center text-2xl font-semibold whitespace-nowrap text-black">EcoSwap</span>
+            <span className="self-center text-2xl font-semibold whitespace-nowrap text-green-600">Eco<span className="text-black">Swap</span></span>
           </a>
 
           <button data-collapse-toggle="navbar-user" type="button" className="inline-flex items-center p-2 w-10 h-10 justify-center text-sm text-gray-500 rounded-lg md:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200" aria-controls="navbar-user" aria-expanded="false">
@@ -60,21 +83,26 @@ export default function Header() {
                 )}
               </li>
               <li>
-                <a href="/UploadProduct" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Publicar Producto</a>
-              </li>
-              <li>
-                <a href="/login" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Iniciar Sesión</a>
-              </li>
-              <li>
-                <a href="/register" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">Registrate</a>
+                <a href="/UploadProduct" onClick={handlePublishClick} className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
+                  Publicar Producto
+                </a>
               </li>
             </ul>
           </div>
 
           <div className="flex items-center space-x-2 md:space-x-4">
-            <a href="/login" className="text-gray-900 hover:text-green-700">Iniciar Sesión</a>
-            <span className="text-black">/</span>
-            <a href="/register" className="text-green-500 hover:text-green-700">Regístrate</a>
+            {userName ? (
+              <>
+                <span className="text-gray-900">Hola, {userName}</span>
+                <button onClick={handleLogout} className="text-red-600 hover:underline">Cerrar sesión</button>
+              </>
+            ) : (
+              <>
+                <a href="/login" className="text-gray-900 hover:text-green-700">Iniciar Sesión</a>
+                <span className="text-black">/</span>
+                <a href="/register" className="text-green-500 hover:text-green-700">Regístrate</a>
+              </>
+            )}
           </div>
         </div>
       </nav>
