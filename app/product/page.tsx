@@ -49,8 +49,8 @@ export default function Page() {
             }
         };
 
-        fetchProducts(selectedCategory); // Llama a la función para obtener productos según la categoría
-    }, [selectedCategory]); // Dependencia para que se ejecute cuando cambie la categoría
+        fetchProducts(selectedCategory); 
+    }, [selectedCategory]); 
 
     if (loading) {
         return (
@@ -77,7 +77,7 @@ export default function Page() {
                         <ul className="space-y-2">
                             <li>
                                 <button
-                                    onClick={() => setSelectedCategory(null)} // Muestra todos los productos
+                                    onClick={() => setSelectedCategory(null)} 
                                     className="text-left w-full text-gray-900 hover:bg-gray-200 p-2 rounded"
                                 >
                                     Todas
@@ -86,7 +86,7 @@ export default function Page() {
                             {categories.map((category) => (
                                 <li key={category}>
                                     <button
-                                        onClick={() => setSelectedCategory(category)} // Establece la categoría seleccionada al hacer clic
+                                        onClick={() => setSelectedCategory(category)} 
                                         className="text-left w-full text-gray-900 hover:bg-gray-200 p-2 rounded"
                                     >
                                         {category}

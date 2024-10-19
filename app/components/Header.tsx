@@ -3,43 +3,91 @@ import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { useRouter, usePathname } from 'next/navigation';
 
+interface DecodedToken {
+  role: string;
+}
+
 export default function Header() {
-  const [isSubmenuOpen, setIsSubmenuOpen] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string | null>(null); 
+  const [userName, setUserName] = useState<string | null>(localStorage.getItem('userName')); 
+  const [error, setError] = useState<string | null>(null);
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-    
+
     if (token) {
-      localStorage.setItem("user", "carlos");
-      const user = localStorage.getItem('user');
-      if (user) {
-        setUserName(user);
+      const fetchUserName = async () => {
+        try {
+          const response = await fetch('http://localhost:8080/api/v1/user/me', {
+            method: 'GET',
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+          console.log(response.status)
+          if (response.ok) {
+            const data = await response.json();
+            console.log(data);
+            setUserName(data.name); 
+            localStorage.setItem('userName', data.name); 
+            setError(null); 
+          } else if (response.status === 401) {
+            localStorage.removeItem('token');
+            localStorage.removeItem('userName');
+            router.push('/login');
+          } else {
+            setError('Error al obtener el usuario. Inténtalo de nuevo más tarde.');
+            console.error('Error al obtener el usuario:', response.status);
+          }
+        } catch (error) {
+          setError('Error al hacer la solicitud. Inténtalo de nuevo más tarde.');
+          console.error('Error al hacer la solicitud:', error);
+        }
+      };
+      fetchUserName();
+    }
+  }, [router]);
+
+  useEffect(() => {
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      const decodedToken = decodeJwt(token);
+      if (decodedToken) {
+        setIsAdmin(decodedToken.role === 'ADMIN');
       }
     }
   }, []);
-
-  const toggleSubmenu = () => {
-    setIsSubmenuOpen(!isSubmenuOpen);
-  };
 
   const isActiveLink = (path: string) => pathname === path;
 
   const handleLogout = () => {
     localStorage.removeItem('token');
-    localStorage.removeItem('user');
+    localStorage.removeItem('userName');
     setUserName(null);
+    router.refresh();
     router.push('/');
   };
 
-  const handlePublishClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handlePublishClick = (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     if (!localStorage.getItem('token')) {
       e.preventDefault(); 
       router.push('/login'); 
     }
   };
+
+  function decodeJwt(token: string): DecodedToken | null {
+    try {
+      const payload = token.split('.')[1];
+      const decodedPayload = JSON.parse(atob(payload));
+      return decodedPayload as DecodedToken;
+    } catch (error) {
+      console.error('Error al decodificar el token:', error);
+      return null;
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50">
@@ -68,25 +116,27 @@ export default function Header() {
                 <a href="/" className={`block py-2 px-3 rounded md:p-0 ${isActiveLink('/') ? 'text-green-600 font-bold' : 'text-black hover:text-green-600'}`} aria-current="page">Inicio</a>
               </li>
               <li className="relative">
-                <button
-                  onClick={toggleSubmenu}
-                  className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent hover:text-green-600 md:p-0"
-                >
-                  Categorías
-                </button>
-                {isSubmenuOpen && (
-                  <ul className="absolute top-full left-0 mt-2 w-48 bg-white border border-gray-200 rounded-lg shadow-lg">
-                    <li><a href="#" className="block px-4 py-2 text-gray-900 hover:bg-gray-100">Categoría 1</a></li>
-                    <li><a href="#" className="block px-4 py-2 text-gray-900 hover:bg-gray-100">Categoría 2</a></li>
-                    <li><a href="#" className="block px-4 py-2 text-gray-900 hover:bg-gray-100">Categoría 3</a></li>
-                  </ul>
-                )}
+                <a href="/product" className={`block py-2 px-3 rounded md:p-0 ${isActiveLink('/product') ? 'text-green-600 font-bold' : 'text-black hover:text-green-600'}`} aria-current="page">Ver Productos</a>
               </li>
               <li>
                 <a href="/UploadProduct" onClick={handlePublishClick} className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
                   Publicar Producto
                 </a>
               </li>
+              {isAdmin && (
+                <>
+                  <li>
+                    <a href="/users" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
+                      Usuarios
+                    </a>
+                  </li>
+                  <li>
+                    <a href="/products" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
+                      Productos
+                    </a>
+                  </li>
+                </>
+              )}
             </ul>
           </div>
 
