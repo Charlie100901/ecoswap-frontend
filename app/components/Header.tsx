@@ -126,12 +126,12 @@ export default function Header() {
               {isAdmin && (
                 <>
                   <li>
-                    <a href="/users" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
+                    <a href="/admin/users" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
                       Usuarios
                     </a>
                   </li>
                   <li>
-                    <a href="/products" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
+                    <a href="/admin/products" className="block py-2 px-3 text-gray-900 rounded hover:bg-gray-100 md:hover:bg-transparent md:hover:text-green-700 md:p-0">
                       Productos
                     </a>
                   </li>

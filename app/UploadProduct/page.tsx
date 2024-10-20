@@ -1,6 +1,6 @@
-"use client";
-
-import { useState, ChangeEvent, FormEvent } from "react";
+'use client';
+import { useState, ChangeEvent, FormEvent, useEffect } from "react";
+import { useRouter, useSearchParams } from 'next/navigation'; 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 
@@ -20,12 +20,12 @@ export default function Page() {
         file: null,
         description: ''
     });
-
     const [isModalOpen, setIsModalOpen] = useState(false);
+    const searchParams = useSearchParams();
+    const productTo = searchParams.get('productTo'); 
 
     const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
         const { name, value, files } = e.target as HTMLInputElement; 
-
         setFormData(prevState => ({
             ...prevState,
             [name]: files ? files[0] : value 
@@ -54,22 +54,30 @@ export default function Page() {
             const response = await fetch('http://localhost:8080/api/v1/product/create', requestOptions);
 
             if (response.ok) {
-                const responseData = await response.text(); 
-                if (responseData) {
-                    const jsonResponse = JSON.parse(responseData); 
-                    setIsModalOpen(true); // Mostrar el modal
-                    // Resetear los campos del formulario
-                    setFormData({
-                        title: '',
-                        category: '',
-                        conditionProduct: '',
-                        file: null,
-                        description: ''
+                const newProduct = await response.json();
+
+                if (productTo) {
+                    await fetch('http://localhost:8080/api/v1/create-exchange', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`,
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            productFrom: { id: newProduct.id },
+                            productTo: { id: productTo }
+                        })
                     });
-                    console.log(jsonResponse);
-                } else {
-                    console.error('La respuesta está vacía');
                 }
+
+                setIsModalOpen(true);
+                setFormData({
+                    title: '',
+                    category: '',
+                    conditionProduct: '',
+                    file: null,
+                    description: ''
+                });
             } else {
                 console.error('Error al subir el producto:', response.statusText);
             }
@@ -79,14 +87,14 @@ export default function Page() {
     };
 
     const closeModal = () => {
-        setIsModalOpen(false); // Cerrar el modal
+        setIsModalOpen(false); 
     };
 
     return (
         <div className="flex flex-col min-h-screen">
             <Header />
             <main className="flex-grow mb-9 mx-32 p-4">
-                <div>
+            <div>
                     <h1 className="text-center mt-14 mb-12 text-2xl font-bold">CARGAR PRODUCTO</h1>
                 </div>
                 <div className="flex justify-between mx-12">
@@ -98,7 +106,7 @@ export default function Page() {
                                     type="text"
                                     className="block w-3/4 pt-2 border border-gray-300 rounded-md"
                                     name="title"
-                                    value={formData.title} // Añadido para controlar el valor del input
+                                    value={formData.title} 
                                     onChange={handleChange} 
                                 />
                             </div>
@@ -107,7 +115,7 @@ export default function Page() {
                                 <select
                                     className="block w-3/4 pt-2 border border-gray-300 rounded-md"
                                     name="conditionProduct"
-                                    value={formData.conditionProduct} // Añadido para controlar el valor del select
+                                    value={formData.conditionProduct} 
                                     onChange={handleChange} 
                                 >
                                     <option value="">Selecciona una opción</option>
@@ -122,7 +130,7 @@ export default function Page() {
                             <select
                                 className="block w-3/4 pt-2 border border-gray-300 rounded-md"
                                 name="category"
-                                value={formData.category} // Añadido para controlar el valor del select
+                                value={formData.category} 
                                 onChange={handleChange}
                             >
                                 <option value="">Selecciona una opción</option>
@@ -143,7 +151,7 @@ export default function Page() {
                             <textarea
                                 className="block w-3/4 pt-2 border border-gray-300 rounded-md h-32"
                                 name="description"
-                                value={formData.description} // Añadido para controlar el valor del textarea
+                                value={formData.description} 
                                 onChange={handleChange} 
                             />
                         </div>
@@ -167,7 +175,6 @@ export default function Page() {
                     </form>
                 </div>
 
-                {/* Modal */}
                 {isModalOpen && (
                     <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
                         <div className="bg-white p-6 rounded-lg shadow-lg">
