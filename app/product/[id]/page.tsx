@@ -82,7 +82,6 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 const data: ExchangeProduct[] = await response.json();
                 setExchangeProducts(data);
-                console.log(data);
             } catch (error) {
                 setError((error as Error).message);
             }
@@ -92,6 +91,35 @@ export default function Page({ params }: { params: { id: string } }) {
             fetchExchangeProducts();
         }
     }, [product]);
+
+    const handleExchangeRequest = async (exchangeProductId: number) => {
+        try {
+            const token = localStorage.getItem('token');
+            console.log(exchangeProductId);
+            const response = await fetch('http://localhost:8080/api/v1/select-exchange', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: exchangeProductId,
+                    productFrom: { id: product?.id },  
+                    // productTo: { id: exchangeProductId },  
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al solicitar el intercambio');
+            }
+
+            const result = await response.json();
+            alert('Intercambio solicitado con éxito');
+            router.push('/success-page');  
+        } catch (error) {
+            setError((error as Error).message);
+        }
+    };
 
     if (loading) {
         return (
@@ -109,10 +137,6 @@ export default function Page({ params }: { params: { id: string } }) {
     if (!product) {
         return <div>No se encontró el producto.</div>;
     }
-
-    const handleIntercambio = () => {
-        router.push(`/UploadProduct?productTo=${product.id}`);
-    };
 
     return (
         <div className={`transition-opacity duration-700 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
@@ -159,12 +183,6 @@ export default function Page({ params }: { params: { id: string } }) {
                                     <span className="font-bold">👤 Publicado por:</span> {product.user?.name}
                                 </li>
                             </ul>
-                            <button 
-                                className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors"
-                                onClick={handleIntercambio}
-                            >
-                                Pedir Intercambio
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -175,54 +193,43 @@ export default function Page({ params }: { params: { id: string } }) {
                         <p>No hay productos disponibles para intercambio.</p>
                     ) : (
                         exchangeProducts.map((exchange) => (
-                            <div key={exchange.id} className="flex justify-between p-4 border rounded-md relative bg-gray-200 mb-4">
-                                {exchange.productFrom && exchange.productFrom.imageProduct ? (
+                                <div key={exchange.id} className="flex justify-between p-4 border rounded-md relative bg-gray-200 mb-4">
                                     <Image
-                                        src={exchange.productFrom.imageProduct || '/img/default-product.jpeg'}
-                                        alt={exchange.productFrom.title}
+                                        src={exchange.productFrom?.imageProduct || '/img/default-product.jpeg'}
+                                        alt={exchange.productFrom?.title || 'Producto'}
                                         width={120}
                                         height={120}
                                         className="rounded-md"
                                     />
-                                ) : (
-                                    <Image
-                                        src="/img/default-product.jpeg"
-                                        alt="Imagen por defecto"
-                                        width={120}
-                                        height={120}
-                                        className="rounded-md"
-                                    />
-                                )}
-                                
-                                <div className="flex flex-col justify-between flex-grow ml-4">
-                                    <h3 className="text-xl font-bold">
-                                        {exchange.productFrom ? exchange.productFrom.title : 'Producto desconocido'}
-                                    </h3>
-                                    <ul className="text-sm space-y-1">
-                                        <li>
-                                            <span className="font-bold">Estado:</span> {exchange.productFrom?.conditionProduct || 'No especificado'}
-                                        </li>
-                                        <li>
-                                            <span className="font-bold">Categoría:</span> {exchange.productFrom?.category || 'No especificada'}
-                                        </li>
-                                        <li>
-                                            <span className="font-bold">Publicado por:</span> {exchange.productFrom?.user?.name || 'Usuario desconocido'}
-                                        </li>
-                                    </ul>
-                                    <button 
-                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
-                                    >
-                                        Intercambiar
-                                    </button>
+                                    <div className="flex flex-col justify-between flex-grow ml-4">
+                                        <h3 className="text-xl font-bold">
+                                            {exchange.productFrom?.title || 'Producto desconocido'}
+                                        </h3>
+                                        <ul className="text-sm space-y-1">
+                                            <li>
+                                                <span className="font-bold">Estado:</span> {exchange.productFrom?.conditionProduct || 'No especificado'}
+                                            </li>
+                                            <li>
+                                                <span className="font-bold">Categoría:</span> {exchange.productFrom?.category || 'No especificada'}
+                                            </li>
+                                            <li>
+                                                <span className="font-bold">Publicado por:</span> {exchange.productFrom?.user?.name || 'Usuario desconocido'}
+                                            </li>
+                                        </ul>
+                                        <button 
+                                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
+                                            onClick={() => handleExchangeRequest(exchange.id)}
+                                        >
+                                            Intercambiar
+                                        </button>
+                                    </div>
+                                    <span className="absolute top-4 right-4 text-gray-500 text-xs">
+                                        Publicado el {new Date(exchange.exchangeRequestedAt).toLocaleDateString()}
+                                    </span>
                                 </div>
-                                <span className="absolute top-4 right-4 text-gray-500 text-xs">
-                                    Publicado el {new Date(exchange.exchangeRequestedAt).toLocaleDateString()}
-                                </span>
-                            </div>
                         ))
                     )}
                 </div>
-
             </div>
             <Footer />
         </div>
