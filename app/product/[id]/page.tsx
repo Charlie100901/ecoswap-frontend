@@ -82,7 +82,6 @@ export default function Page({ params }: { params: { id: string } }) {
 
                 const data: ExchangeProduct[] = await response.json();
                 setExchangeProducts(data);
-                console.log(data);
             } catch (error) {
                 setError((error as Error).message);
             }
@@ -93,10 +92,39 @@ export default function Page({ params }: { params: { id: string } }) {
         }
     }, [product]);
 
+    const handleExchangeRequest = async (exchangeProductId: number) => {
+        try {
+            const token = localStorage.getItem('token');
+            console.log(exchangeProductId);
+            const response = await fetch('http://localhost:8080/api/v1/select-exchange', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    id: exchangeProductId,
+                    productFrom: { id: product?.id },  
+                    // productTo: { id: exchangeProductId },  
+                }),
+            });
+
+            if (!response.ok) {
+                throw new Error('Error al solicitar el intercambio');
+            }
+
+            const result = await response.json();
+            alert('Intercambio solicitado con éxito');
+            router.push('/success-page');  
+        } catch (error) {
+            setError((error as Error).message);
+        }
+    };
+
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500 mb-4"></div>
                 <p className="text-lg text-gray-700">Cargando producto...</p>
             </div>
         );
@@ -115,10 +143,10 @@ export default function Page({ params }: { params: { id: string } }) {
     };
 
     return (
-        <div className={`transition-opacity duration-700 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`transition-opacity duration-700 dark:dark:bg-zinc-800 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
             <Header />
-            <div className="max-w-[1300px] mx-auto p-6">
-                <h1 className="text-3xl font-bold text-center mb-6">VER PRODUCTO</h1>
+            <div className="max-w-[1300px] mx-auto p-6 mb-[50px]">
+                <h1 className="text-3xl font-bold text-center mb-6 dark:text-white">VER PRODUCTO</h1>
                 <div className="flex justify-center items-start space-x-8">
                     <div className="flex flex-col space-y-4">
                         {[1, 2, 3].map((index) => (
@@ -141,21 +169,22 @@ export default function Page({ params }: { params: { id: string } }) {
                             height={400}
                             className="rounded-md"
                         />
-
                         <div className="flex flex-col space-y-4">
                             <h2 className="text-2xl font-bold text-green-600 uppercase">{product.title}</h2>
-                            <p className="text-[#4F3527]">{product.description}</p>
+                            <p className="text-[#4F3527] dark:text-white whitespace-normal break-words max-w-prose">
+                                {product.description}
+                            </p>          
                             <ul className="space-y-2">
-                                <li>
-                                    <span className="font-bold">🟢 Estado:</span> {product.conditionProduct}
+                                <li className='dark:text-white'>
+                                    <span className="font-bold dark:text-white">🟢 Estado:</span> {product.conditionProduct}
                                 </li>
-                                <li>
+                                <li className='dark:text-white'>
                                     <span className="font-bold">📂 Categoría:</span> {product.category}
                                 </li>
-                                <li>
+                                <li className='dark:text-white'>
                                     <span className="font-bold">📅 Fecha de publicación:</span> {product.releaseDate}
                                 </li>
-                                <li>
+                                <li className='dark:text-white'>
                                     <span className="font-bold">👤 Publicado por:</span> {product.user?.name}
                                 </li>
                             </ul>
@@ -167,62 +196,52 @@ export default function Page({ params }: { params: { id: string } }) {
                             </button>
                         </div>
                     </div>
+
                 </div>
 
                 <div className="mt-12">
-                    <h2 className="text-2xl font-bold mb-4">Productos Disponibles para Intercambio</h2>
+                    <h2 className="text-2xl font-bold mb-4 dark:text-white">Productos Disponibles para Intercambio</h2>
                     {exchangeProducts.length === 0 ? (
-                        <p>No hay productos disponibles para intercambio.</p>
+                        <p className='dark:text-white'>No hay productos disponibles para intercambio.</p>
                     ) : (
                         exchangeProducts.map((exchange) => (
-                            <div key={exchange.id} className="flex justify-between p-4 border rounded-md relative bg-gray-200 mb-4">
-                                {exchange.productFrom && exchange.productFrom.imageProduct ? (
+                                <div key={exchange.id} className="flex justify-between p-4 border rounded-md relative bg-gray-200 mb-4">
                                     <Image
-                                        src={exchange.productFrom.imageProduct || '/img/default-product.jpeg'}
-                                        alt={exchange.productFrom.title}
+                                        src={exchange.productFrom?.imageProduct || '/img/default-product.jpeg'}
+                                        alt={exchange.productFrom?.title || 'Producto'}
                                         width={120}
                                         height={120}
                                         className="rounded-md"
                                     />
-                                ) : (
-                                    <Image
-                                        src="/img/default-product.jpeg"
-                                        alt="Imagen por defecto"
-                                        width={120}
-                                        height={120}
-                                        className="rounded-md"
-                                    />
-                                )}
-                                
-                                <div className="flex flex-col justify-between flex-grow ml-4">
-                                    <h3 className="text-xl font-bold">
-                                        {exchange.productFrom ? exchange.productFrom.title : 'Producto desconocido'}
-                                    </h3>
-                                    <ul className="text-sm space-y-1">
-                                        <li>
-                                            <span className="font-bold">Estado:</span> {exchange.productFrom?.conditionProduct || 'No especificado'}
-                                        </li>
-                                        <li>
-                                            <span className="font-bold">Categoría:</span> {exchange.productFrom?.category || 'No especificada'}
-                                        </li>
-                                        <li>
-                                            <span className="font-bold">Publicado por:</span> {exchange.productFrom?.user?.name || 'Usuario desconocido'}
-                                        </li>
-                                    </ul>
-                                    <button 
-                                        className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
-                                    >
-                                        Intercambiar
-                                    </button>
+                                    <div className="flex flex-col justify-between flex-grow ml-4">
+                                        <h3 className="text-xl font-bold">
+                                            {exchange.productFrom?.title || 'Producto desconocido'}
+                                        </h3>
+                                        <ul className="text-sm space-y-1">
+                                            <li className='dark:text-white'>
+                                                <span className="font-bold">Estado:</span> {exchange.productFrom?.conditionProduct || 'No especificado'}
+                                            </li>
+                                            <li className='dark:text-white'>
+                                                <span className="font-bold">Categoría:</span> {exchange.productFrom?.category || 'No especificada'}
+                                            </li>
+                                            <li className='dark:text-white'>
+                                                <span className="font-bold">Publicado por:</span> {exchange.productFrom?.user?.name || 'Usuario desconocido'}
+                                            </li>
+                                        </ul>
+                                        <button 
+                                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
+                                            onClick={() => handleExchangeRequest(exchange.id)}
+                                        >
+                                            Intercambiar
+                                        </button>
+                                    </div>
+                                    <span className="absolute top-4 right-4 text-gray-500 text-xs dark:text-white">
+                                        Publicado el {new Date(exchange.exchangeRequestedAt).toLocaleDateString()}
+                                    </span>
                                 </div>
-                                <span className="absolute top-4 right-4 text-gray-500 text-xs">
-                                    Publicado el {new Date(exchange.exchangeRequestedAt).toLocaleDateString()}
-                                </span>
-                            </div>
                         ))
                     )}
                 </div>
-
             </div>
             <Footer />
         </div>
