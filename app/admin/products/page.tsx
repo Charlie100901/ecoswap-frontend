@@ -53,7 +53,12 @@ export default function Page() {
   }, []);
 
   if (loading) {
-    return <div>Cargando productos...</div>;
+    return (
+      <div className="flex flex-col items-center justify-center h-screen">
+          <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500 mb-4"></div>
+          <p className="text-lg text-gray-700">Cargando productos...</p>
+      </div>
+    );
   }
 
   if (error) {
@@ -105,7 +110,7 @@ export default function Page() {
                 products.map((product) => (
                   <tr key={product.id} className="border-b">
                     <td className="py-3 px-4 text-sm">{product.title}</td>
-                    <td className="py-3 px-4 text-sm">{product.description}</td>
+                    <td className="py-3 px-4 text-sm whitespace-normal break-words max-w-prose">{product.description}</td>
                     <td className="py-3 px-4 text-sm">{product.category}</td>
                     <td className="py-3 px-4 text-sm">{product.conditionProduct}</td>
                     <td className="py-3 px-4 flex space-x-2">

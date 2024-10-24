@@ -1,11 +1,12 @@
-"use client"
-import { useState } from "react";
+"use client";
+
+import { useState, ChangeEvent } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Page() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
   const handleLogin = async () => {
@@ -24,7 +25,7 @@ export default function Page() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("token", data.jwt);
-        router.push('/');
+        router.push("/");
       } else {
         setError("Correo o contraseña incorrectos.");
       }
@@ -33,12 +34,20 @@ export default function Page() {
     }
   };
 
+  const handleChangeEmail = (e: ChangeEvent<HTMLInputElement>) => {
+    setEmail(e.target.value);
+  };
+
+  const handleChangePassword = (e: ChangeEvent<HTMLInputElement>) => {
+    setPassword(e.target.value);
+  };
+
   return (
     <div className="relative flex items-center justify-center w-full h-screen bg-gray-100">
       <img
         src="/img/background-auth.jpg"
         alt="background"
-        className="absolute inset-0 w-full h-full object-cover filter brightness-[40%]"
+        className="absolute inset-0 w-full h-full object-cover filter brightness-[35%]"
       />
 
       <div className="relative z-10 max-w-md w-full bg-white rounded-lg shadow-lg p-6 mt-16">
@@ -47,32 +56,39 @@ export default function Page() {
         {error && <p className="text-red-600 mb-4">{error}</p>}
 
         <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 mb-1">Correo Electrónico</label>
+          <label htmlFor="email" className="block text-gray-700 mb-1">
+            Correo Electrónico <span className="text-red-600">*</span>
+          </label>
           <input
             type="email"
             id="email"
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             placeholder="Ingresa tu correo"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={handleChangeEmail}
           />
         </div>
 
         <div className="mb-4">
-          <label htmlFor="password" className="block text-gray-700 mb-1">Contraseña</label>
+          <label htmlFor="password" className="block text-gray-700 mb-1">
+            Contraseña <span className="text-red-600">*</span>
+          </label>
           <input
             type="password"
             id="password"
             className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             placeholder="Ingresa tu contraseña"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={handleChangePassword}
           />
         </div>
 
         <div className="mb-4">
           <p className="text-gray-600">
-            ¿Aún no tienes cuenta? <a href="/register" className="text-green-700 hover:underline">Regístrate</a>
+            ¿Aún no tienes cuenta?{" "}
+            <a href="/register" className="text-green-700 hover:underline">
+              Regístrate
+            </a>
           </p>
         </div>
 

@@ -54,8 +54,8 @@ export default function Page() {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center h-screen">
-                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 mb-4"></div>
+            <div className="flex flex-col items-center justify-center h-screen dark:bg-zinc-800">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500 mb-4 "></div>
                 <p className="text-lg text-gray-700">Cargando productos...</p>
             </div>
         );
@@ -66,19 +66,19 @@ export default function Page() {
     }
 
     return (
-        <div>
+        <div className='dark:bg-zinc-800'>
             <Header />
-            <div className="container mx-auto p-4">
-                <h1 className="text-center text-3xl font-bold mb-6">ENCUENTRA LO QUE NECESITAS</h1>
+            <div className="container mx-auto p-4 mb-[100px] mt-6">
+                <h1 className="text-center text-3xl font-bold mb-6 dark:text-white">ENCUENTRA LO QUE NECESITAS</h1>
 
                 <div className="flex">
-                    <aside className="w-1/4 p-4 bg-[#F4F4F4] rounded-lg shadow-lg">
-                        <h3 className="font-bold text-lg mb-4">Categorías</h3>
+                <aside className="w-1/4 p-4 bg-[#F4F4F4] dark:bg-zinc-800 rounded-lg shadow-lg">
+                        <h3 className="font-bold text-lg mb-4 dark:text-gray-300">Categorías</h3>
                         <ul className="space-y-2">
                             <li>
                                 <button
-                                    onClick={() => setSelectedCategory(null)} 
-                                    className="text-left w-full text-gray-900 hover:bg-gray-200 p-2 rounded"
+                                    onClick={() => setSelectedCategory(null)}
+                                    className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
                                 >
                                     Todas
                                 </button>
@@ -86,8 +86,8 @@ export default function Page() {
                             {categories.map((category) => (
                                 <li key={category}>
                                     <button
-                                        onClick={() => setSelectedCategory(category)} 
-                                        className="text-left w-full text-gray-900 hover:bg-gray-200 p-2 rounded"
+                                        onClick={() => setSelectedCategory(category)}
+                                        className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
                                     >
                                         {category}
                                     </button>
@@ -101,7 +101,7 @@ export default function Page() {
                             {products.map((product, index) => (
                                 <div
                                     key={product.id}
-                                    className={`bg-white border border-gray-200 rounded-lg shadow-lg p-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl 
+                                    className={`bg-white dark:hover:shadow-lg dark:hover:bg-gray-900 dark:hover:shadow-lime-400 dark:bg-neutral-800 border border-gray-200 rounded-lg shadow-lg p-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl 
                                                 opacity-0 translate-y-4 animate-[fade-in-up_0.5s_ease-out_forwards] 
                                                 ${index < 3 ? 'animate-delay-[0ms]' : index < 6 ? 'animate-delay-[200ms]' : 'animate-delay-[400ms]'}`}
                                 >
@@ -115,8 +115,8 @@ export default function Page() {
                                             style={{ objectFit: "cover" }}
                                         />
                                     </a>
-                                    <h3 className="text-xl font-bold mt-4">{product.title}</h3>
-                                    <p className="text-sm text-gray-500 mt-2">{product.description}</p>
+                                    <h3 className="text-xl font-bold mt-4 dark:text-white uppercase">{product.title}</h3>
+                                    <p className="text-sm text-gray-500 mt-2 dark:text-white">{product.description}</p>
                                     <a
                                         href={`/product/${product.id}`}
                                         className="inline-flex mt-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-800 hover:translate-x-1 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
