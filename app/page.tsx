@@ -22,7 +22,7 @@ export default function Home() {
     <div className='dark:bg-zinc-800'>
       <Header />
       <main className="flex min-h-screen flex-col items-center justify-between">
-        <div className="relative w-full h-[700px]">
+        <div className="relative w-full h-[60vh] md:h-[700px]">
           <Image
             src="/img/home.jpg"
             alt="Home Image"
@@ -32,7 +32,7 @@ export default function Home() {
           />
 
           <motion.p 
-            className="absolute inset-0 flex flex-col items-center justify-center text-white text-7xl z-40"
+            className="absolute inset-0 flex flex-col items-center justify-center text-white text-5xl md:text-7xl z-40"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 1 }}
@@ -44,7 +44,7 @@ export default function Home() {
           <Link href="/product">
             <button
               type="submit"
-              className="absolute top-[450px] left-1/2 transform -translate-x-1/2 flex justify-center gap-2 z-40 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-green-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700  px-4 py-2 overflow-hidden border-2 rounded-full group"
+              className="absolute top-[70%] left-1/2 transform -translate-x-1/2 flex justify-center gap-2 z-40 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-green-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700  px-4 py-2 overflow-hidden border-2 rounded-full group"
             >
               Empieza a intercambiar
               <svg

@@ -161,12 +161,12 @@ export default function Page({ params }: { params: { id: string } }) {
                         ))}
                     </div>
 
-                    <div className="flex space-x-8">
+                    <div className="flex space-x-9">
                         <Image
                             src={product.imageProduct || '/img/default-product.jpeg'}
                             alt="Main Product Image"
-                            width={400}
-                            height={400}
+                            width={600}
+                            height={600}
                             className="rounded-md"
                         />
                         <div className="flex flex-col space-y-4">

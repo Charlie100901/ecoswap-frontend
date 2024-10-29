@@ -15,7 +15,10 @@ export default function Page() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
-    const [selectedCategory, setSelectedCategory] = useState<string | null>(null); // Para almacenar la categoría seleccionada
+    const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+    const [page, setPage] = useState<number>(0); 
+    const [size, setSize] = useState<number>(9); 
+    const [totalPages, setTotalPages] = useState<number>(0); 
 
     const categories = [
         "Electrónica y Tecnología",
@@ -31,17 +34,20 @@ export default function Page() {
     ];
 
     useEffect(() => {
-        const fetchProducts = async (category: string | null) => {
+        const fetchProducts = async () => {
             setLoading(true);
             try {
-                const url = category ? `http://localhost:8080/api/v1/product/category/${category}` : `http://localhost:8080/api/v1/product`;
+                const url = selectedCategory 
+                    ? `http://localhost:8080/api/v1/product/category/${selectedCategory}?page=${page}&size=${size}` 
+                    : `http://localhost:8080/api/v1/product?page=${page}&size=${size}`;
+                    
                 const response = await fetch(url);
                 if (!response.ok) {
                     throw new Error('Error al cargar los productos');
                 }
-                const data: Product[] = await response.json();
-                console.log(data);
-                setProducts(data);
+                const data = await response.json();
+                setProducts(data.products); 
+                setTotalPages(data.totalPages); 
             } catch (error) {
                 setError((error as Error).message);
             } finally {
@@ -49,8 +55,8 @@ export default function Page() {
             }
         };
 
-        fetchProducts(selectedCategory); 
-    }, [selectedCategory]); 
+        fetchProducts(); 
+    }, [selectedCategory, page, size]); 
 
     if (loading) {
         return (
@@ -71,13 +77,13 @@ export default function Page() {
             <div className="container mx-auto p-4 mb-[100px] mt-6">
                 <h1 className="text-center text-3xl font-bold mb-6 dark:text-white">ENCUENTRA LO QUE NECESITAS</h1>
 
-                <div className="flex">
-                <aside className="w-1/4 p-4 bg-[#F4F4F4] dark:bg-zinc-800 rounded-lg shadow-lg">
+                <div className="flex flex-col md:flex-row">
+                    <aside className="md:w-1/4 p-4 bg-[#F4F4F4] dark:bg-zinc-800 rounded-lg shadow-lg mb-4 md:mb-0">
                         <h3 className="font-bold text-lg mb-4 dark:text-gray-300">Categorías</h3>
                         <ul className="space-y-2">
                             <li>
                                 <button
-                                    onClick={() => setSelectedCategory(null)}
+                                    onClick={() => { setSelectedCategory(null); setPage(0); }} 
                                     className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
                                 >
                                     Todas
@@ -86,7 +92,7 @@ export default function Page() {
                             {categories.map((category) => (
                                 <li key={category}>
                                     <button
-                                        onClick={() => setSelectedCategory(category)}
+                                        onClick={() => { setSelectedCategory(category); setPage(0); }} 
                                         className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
                                     >
                                         {category}
@@ -96,7 +102,7 @@ export default function Page() {
                         </ul>
                     </aside>
 
-                    <main className="flex-1 ml-8">
+                    <main className="flex-1">
                         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                             {products.map((product, index) => (
                                 <div
@@ -107,16 +113,15 @@ export default function Page() {
                                 >
                                     <a href="#">
                                         <Image
-                                            className="rounded-lg"
+                                            className="rounded-lg max-h-[250px] min-h-[250px] w-full object-cover"
                                             src={product.imageProduct || '/img/default-product.jpeg'}
                                             alt={product.title}
                                             width={340}
                                             height={300}
-                                            style={{ objectFit: "cover" }}
                                         />
                                     </a>
                                     <h3 className="text-xl font-bold mt-4 dark:text-white uppercase">{product.title}</h3>
-                                    <p className="text-sm text-gray-500 mt-2 dark:text-white">{product.description}</p>
+                                    <p className="text-sm text-gray-700 mt-2 dark:text-white">{product.description}</p>
                                     <a
                                         href={`/product/${product.id}`}
                                         className="inline-flex mt-4 items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-800 hover:translate-x-1 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
@@ -140,6 +145,24 @@ export default function Page() {
                                     </a>
                                 </div>
                             ))}
+                        </div>
+
+                        <div className="flex justify-between items-center mt-6">
+                            <button 
+                                onClick={() => setPage(page > 0 ? page - 1 : 0)} 
+                                disabled={page === 0} 
+                                className="bg-gray-300 text-gray-700 rounded px-4 py-2 disabled:opacity-50"
+                            >
+                                Anterior
+                            </button>
+                            <span className='dark:text-white'>Página {page + 1} de {totalPages}</span>
+                            <button 
+                                onClick={() => setPage(page < totalPages - 1 ? page + 1 : totalPages - 1)} 
+                                disabled={page === totalPages - 1} 
+                                className="bg-gray-300 text-gray-700 rounded px-4 py-2 disabled:opacity-50"
+                            >
+                                Siguiente
+                            </button>
                         </div>
                     </main>
                 </div>
