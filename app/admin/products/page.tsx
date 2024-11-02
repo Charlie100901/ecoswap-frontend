@@ -33,7 +33,7 @@ export default function Page() {
             'Content-Type': 'application/json',
           },
         });
-
+ 
         if (!response.ok) {
           throw new Error('Error al obtener los productos');
         }
@@ -41,7 +41,7 @@ export default function Page() {
         const data: Product[] = await response.json();
         console.log(data)
 
-        setProducts(data);
+        setProducts(data.products);
       } catch (error) {
         setError((error as Error).message);
       } finally {
