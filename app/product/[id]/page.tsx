@@ -95,7 +95,6 @@ export default function Page({ params }: { params: { id: string } }) {
     const handleExchangeRequest = async (exchangeProductId: number) => {
         try {
             const token = localStorage.getItem('token');
-            console.log(exchangeProductId);
             const response = await fetch('http://localhost:8080/api/v1/select-exchange', {
                 method: 'POST',
                 headers: {
@@ -104,23 +103,29 @@ export default function Page({ params }: { params: { id: string } }) {
                 },
                 body: JSON.stringify({
                     id: exchangeProductId,
-                    productFrom: { id: product?.id },  
-                    // productTo: { id: exchangeProductId },  
+                    productFrom: { id: product?.id },
                 }),
             });
-
+    
             if (!response.ok) {
                 throw new Error('Error al solicitar el intercambio');
             }
-
+    
             const result = await response.json();
-            alert('Intercambio solicitado con éxito');
-            router.push('/success-page');  
+    
+            // Save exchange details in local storage
+            localStorage.setItem('exchangeProduct', JSON.stringify({
+                id: exchangeProductId,
+                productFrom: product,
+                productTo: result.productTo,
+            }));
+    
+            router.push('/exchangeview');
         } catch (error) {
             setError((error as Error).message);
         }
     };
-
+    
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
@@ -232,7 +237,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
                                             onClick={() => handleExchangeRequest(exchange.id)}
                                         >
-                                            Intercambiar
+                                            <a href='/exchangeview'> Intercambiar</a>
                                         </button>
                                     </div>
                                     <span className="absolute top-4 right-4 text-gray-500 text-xs dark:text-white">
