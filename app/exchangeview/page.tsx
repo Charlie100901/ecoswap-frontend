@@ -59,7 +59,7 @@ export default function ExchangeView() {
                         <h2 className="text-2xl font-semibold">Producto Ofrecido</h2>
                         <Image src={exchangeProduct.productFrom.imageProduct} alt={exchangeProduct.productFrom.title} width={300} height={300} />
                         <p><strong>Título:</strong> {exchangeProduct.productFrom.title}</p>
-                        <p><strong>Descripción:</strong> {exchangeProduct.productFrom.description}</p>
+                        <p className='whitespace-normal break-words max-w-prose'><strong>Descripción:</strong> {exchangeProduct.productFrom.description}</p>
                         <p><strong>Estado:</strong> {exchangeProduct.productFrom.conditionProduct}</p>
                         <p><strong>Publicado por:</strong> {exchangeProduct.productTo.user.name}</p>
 
@@ -70,7 +70,7 @@ export default function ExchangeView() {
                         <h2 className="text-2xl font-semibold">Producto Aceptado</h2>
                         <Image src={exchangeProduct.productTo.imageProduct} alt={exchangeProduct.productTo.title} width={300} height={300} />
                         <p><strong>Título:</strong> {exchangeProduct.productTo.title}</p>
-                        <p><strong>Descripción:</strong> {exchangeProduct.productTo.description}</p>
+                        <p className='whitespace-normal break-words max-w-prose'><strong>Descripción:</strong> {exchangeProduct.productTo.description}</p>
                         <p><strong>Estado:</strong> {exchangeProduct.productTo.conditionProduct}</p>
                         <p><strong>Publicado por:</strong> {exchangeProduct.productTo.user.name}</p>
                     </div>
