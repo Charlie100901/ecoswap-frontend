@@ -117,7 +117,7 @@ export default function Page({ params }: { params: { id: string } }) {
             localStorage.setItem('exchangeProduct', JSON.stringify({
                 id: exchangeProductId,
                 productFrom: product,
-                productTo: result.productTo,
+                productTo: result.productFrom,
             }));
     
             router.push('/exchangeview');

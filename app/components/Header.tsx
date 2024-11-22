@@ -233,6 +233,18 @@ export default function Header() {
                 <>
                   <li>
                     <a
+                      href="/admin/dashboard"
+                      className={`block py-2 px-3 rounded md:p-0 ${
+                        isActiveLink("/admin/dashboard")
+                          ? "text-green-600 font-bold dark:text-green-400"
+                          : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
+                      }`}
+                    >
+                      Dashboard
+                    </a>
+                  </li>
+                  <li>
+                    <a
                       href="/admin/users"
                       className={`block py-2 px-3 rounded md:p-0 ${
                         isActiveLink("/admin/users")

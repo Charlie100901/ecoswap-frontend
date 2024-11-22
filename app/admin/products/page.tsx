@@ -17,6 +17,8 @@ export default function Page() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [productToDelete, setProductToDelete] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,8 +41,6 @@ export default function Page() {
         }
 
         const data: Product[] = await response.json();
-        console.log(data)
-
         setProducts(data.products);
       } catch (error) {
         setError((error as Error).message);
@@ -51,6 +51,44 @@ export default function Page() {
 
     fetchProducts();
   }, []);
+
+  const handleDelete = async () => {
+    if (productToDelete === null) return;
+
+    try {
+      const token = localStorage.getItem('token');
+      if (!token) {
+        throw new Error('No se encontró el token de autenticación');
+      }
+
+      const response = await fetch(`http://localhost:8080/api/v1/product/${productToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Error al eliminar el producto');
+      }
+
+      setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productToDelete));
+      setShowModal(false); // Cerrar modal después de eliminar
+    } catch (error) {
+      alert((error as Error).message);
+    }
+  };
+
+  const openModal = (id: number) => {
+    setProductToDelete(id);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setProductToDelete(null);
+  };
 
   if (loading) {
     return (
@@ -70,23 +108,6 @@ export default function Page() {
       <Header />
       <div className="container mx-auto p-4">
         <h1 className="text-center text-2xl font-bold mb-8">Panel de Productos</h1>
-
-        <div className="flex justify-between mb-4">
-          <button className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
-            Crear Producto Nuevo
-          </button>
-
-          <div className="flex items-center">
-            <input
-              type="text"
-              placeholder="Buscar"
-              className="border border-gray-300 rounded-l py-2 px-4 focus:outline-none"
-            />
-            <button className="bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-r">
-              Buscar
-            </button>
-          </div>
-        </div>
 
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
@@ -114,10 +135,10 @@ export default function Page() {
                     <td className="py-3 px-4 text-sm">{product.category}</td>
                     <td className="py-3 px-4 text-sm">{product.conditionProduct}</td>
                     <td className="py-3 px-4 flex space-x-2">
-                      <button className="bg-green-500 hover:bg-green-600 text-white font-bold py-1 px-3 rounded text-sm">
-                        Editar
-                      </button>
-                      <button className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm">
+                      <button
+                        onClick={() => openModal(product.id)}
+                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm"
+                      >
                         Eliminar
                       </button>
                     </td>
@@ -128,6 +149,30 @@ export default function Page() {
           </table>
         </div>
       </div>
+
+      {/* Modal de confirmación */}
+      {showModal && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4">Confirmar Eliminación</h2>
+            <p>¿Estás seguro de que deseas eliminar este producto?</p>
+            <div className="flex justify-end space-x-2 mt-4">
+              <button
+                onClick={closeModal}
+                className="bg-gray-500 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Cancelar
+              </button>
+              <button
+                onClick={handleDelete}
+                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded"
+              >
+                Eliminar
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
