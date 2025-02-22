@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
+import Link from "next/link";
 
 interface DecodedToken {
   role: string;
@@ -124,7 +125,7 @@ export default function Header() {
     <header className="sticky top-0 z-50  ">
       <nav className="bg-white border-gray-200 shadow-md dark:bg-gray-900 w-full ">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 ">
-          <a
+          <Link
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
           >
@@ -151,7 +152,7 @@ export default function Header() {
             <span className="self-center text-2xl font-semibold whitespace-nowrap text-green-600 dark:text-green-400">
               Eco<span className="text-black dark:text-white">Swap</span>
             </span>
-          </a>
+          </Link>
           <div className="flex items-center lg:order-2">
             <button
               data-collapse-toggle="mobile-menu-2"
@@ -191,20 +192,19 @@ export default function Header() {
           <div className="flex-grow flex justify-center " id="mobile-menu-2">
             <ul className="flex  space-x-8 lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
-                <a
+                <Link
                   href="/"
                   className={`block py-2 px-3 rounded md:p-0 ${
                     isActiveLink("/")
                       ? "text-green-600 font-bold dark:text-green-400"
                       : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
                   }`}
-                  aria-current="page"
                 >
                   Inicio
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/product"
                   className={`block py-2 px-3 rounded md:p-0 ${
                     isActiveLink("/product")
@@ -214,10 +214,10 @@ export default function Header() {
                   aria-current="page"
                 >
                   Ver Productos
-                </a>
+                </Link>
               </li>
               <li>
-                <a
+                <Link
                   href="/UploadProduct"
                   onClick={handlePublishClick}
                   className={`block py-2 px-3 rounded md:p-0 ${
@@ -227,12 +227,12 @@ export default function Header() {
                   }`}
                 >
                   Publicar Producto
-                </a>
+                </Link>
               </li>
               {isAdmin && (
                 <>
                   <li>
-                    <a
+                    <Link
                       href="/admin/dashboard"
                       className={`block py-2 px-3 rounded md:p-0 ${
                         isActiveLink("/admin/dashboard")
@@ -241,11 +241,11 @@ export default function Header() {
                       }`}
                     >
                       Dashboard
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
-                      href="/admin/users"
+                    <Link
+                      href={`/admin/users`}
                       className={`block py-2 px-3 rounded md:p-0 ${
                         isActiveLink("/admin/users")
                           ? "text-green-600 font-bold dark:text-green-400"
@@ -253,10 +253,10 @@ export default function Header() {
                       }`}
                     >
                       Usuarios
-                    </a>
+                    </Link>
                   </li>
                   <li>
-                    <a
+                    <Link
                       href="/admin/products"
                       className={`block py-2 px-3 rounded md:p-0 ${
                         isActiveLink("/admin/products")
@@ -265,7 +265,7 @@ export default function Header() {
                       }`}
                     >
                       Productos
-                    </a>
+                    </Link>
                   </li>
                 </>
               )}
@@ -338,7 +338,7 @@ export default function Header() {
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
                     <ul className="py-2">
                       <li className="px-4 py-2 hover:bg-gray-100">
-                        <a
+                        <Link
                           href="/profile"
                           className="flex items-center gap-2 text-gray-700"
                         >
@@ -349,10 +349,10 @@ export default function Header() {
                             height={16}
                           />
                           Perfil
-                        </a>
+                        </Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100">
-                        <a
+                        <Link
                           href="#"
                           className="flex items-center gap-2 text-gray-700"
                           onClick={handleLogout}
@@ -364,28 +364,27 @@ export default function Header() {
                             height={16}
                           />
                           Cerrar sesión
-                        </a>
+                        </Link>
                       </li>
                     </ul>
                   </div>
                 </div>
-
               </>
             ) : (
               <>
-                <a
+                <Link
                   href="/login"
                   className="text-gray-900 hover:text-green-700 dark:text-white"
                 >
                   Iniciar Sesión
-                </a>
+                </Link>
                 <span className="text-black dark:text-white">/</span>
-                <a
+                <Link
                   href="/register"
                   className="text-green-500 hover:text-green-700"
                 >
-                  Regístrate
-                </a>
+                  Registrate
+                </Link>
               </>
             )}
           </div>

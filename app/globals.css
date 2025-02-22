@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+/* tailwind css v4.x */
+/* @import "tailwindcss";
+@import "tailwindcss-animated"; */
+
 /* :root {
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: 214, 219, 220;

@@ -3,6 +3,7 @@
 import { useState, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 
 export default function RegisterPage() {
   const [name, setName] = useState<string>("");
@@ -35,7 +36,7 @@ export default function RegisterPage() {
         const data = await response.json();
         console.log(data);
         localStorage.setItem("token", data.jwt);
-        router.push("/"); 
+        router.push("/");
       } else {
         setError("Error al registrar. Por favor, intenta nuevamente.");
       }
@@ -44,19 +45,22 @@ export default function RegisterPage() {
     }
   };
 
-  const handleChange = (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
-    setter(e.target.value);
-  };
+  const handleChange =
+    (setter: (value: string) => void) => (e: ChangeEvent<HTMLInputElement>) => {
+      setter(e.target.value);
+    };
 
   return (
     <div className="relative flex items-center justify-center w-full h-screen bg-gray-100">
-      <img
+      <Image
         src="/img/background-auth.jpg"
         alt="background"
-        className="absolute inset-0 w-full h-full object-cover filter brightness-[35%]"
+        fill
+        className="absolute inset-0 object-cover filter brightness-[35%]"
+        priority
       />
 
-      <div className="relative z-10 max-w-md w-full bg-white rounded-lg shadow-lg p-6 mt-16">
+      <div className="relative z-10 max-w-md w-full bg-white rounded-lg shadow-lg p-6 mt-16 animate-fade-down">
         <h2 className="text-2xl font-bold text-gray-800 mb-4">Registrate</h2>
 
         {error && <p className="text-red-600 mb-4">{error}</p>}

@@ -1,19 +1,20 @@
-'use client';
-import { useEffect, useState, useRef } from 'react';
-import Image from 'next/image';
-import Header from './components/Header';
-import Footer from './components/Footer';
-import Link from 'next/link';
-import { motion, useScroll, useTransform } from 'framer-motion';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
+"use client";
+import { useEffect, useState, useRef } from "react";
+import Image from "next/image";
+import Header from "./components/Header";
+import Footer from "./components/Footer";
+import Link from "next/link";
+import { motion, useScroll, useTransform } from "framer-motion";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import ProductCard from "./components/ProductCard";
 
 interface Product {
-  id: number; 
+  id: number;
   title: string;
   description: string;
-  imageProduct?: string; 
+  imageProduct?: string;
 }
 
 export default function Home() {
@@ -21,7 +22,7 @@ export default function Home() {
   const recentProductsRef = useRef<HTMLDivElement | null>(null);
   const { scrollYProgress } = useScroll({
     target: recentProductsRef,
-    offset: ["start end", "end start"]
+    offset: ["start end", "end start"],
   });
 
   const opacity = useTransform(scrollYProgress, [0, 0.3, 0.7, 1], [0, 1, 1, 0]);
@@ -30,11 +31,13 @@ export default function Home() {
   useEffect(() => {
     async function fetchProducts() {
       try {
-        const response = await fetch('http://localhost:8080/api/v1/product/recent');
+        const response = await fetch(
+          "http://localhost:8080/api/v1/product/recent"
+        );
         const data: Product[] = await response.json();
         setRecentProducts(data);
       } catch (error) {
-        console.error('Error fetching products:', error);
+        console.error("Error fetching products:", error);
       }
     }
     fetchProducts();
@@ -54,7 +57,7 @@ export default function Home() {
           slidesToScroll: 1,
           infinite: true,
           dots: true,
-        }
+        },
       },
       {
         breakpoint: 400,
@@ -62,9 +65,9 @@ export default function Home() {
           slidesToShow: 1,
           slidesToScroll: 1,
           dots: true,
-        }
-      }
-    ]
+        },
+      },
+    ],
   };
 
   return (
@@ -80,7 +83,7 @@ export default function Home() {
             className="absolute inset-0 w-full h-full object-cover filter brightness-[40%]"
           />
 
-          <motion.p 
+          <motion.p
             className="absolute inset-0 flex flex-col items-center justify-center text-white text-5xl md:text-7xl z-40"
             initial={{ opacity: 0, y: -50 }}
             animate={{ opacity: 1, y: 0 }}
@@ -93,7 +96,7 @@ export default function Home() {
           <Link href="/product">
             <button
               type="submit"
-              className="absolute top-[70%] left-1/2 transform -translate-x-1/2 flex justify-center gap-2 z-40 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-green-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700  px-4 py-2 overflow-hidden border-2 rounded-full group"
+              className="absolute  top-[70%] left-1/2 transform -translate-x-1/2 flex justify-center animate-jump-in gap-2 z-40 items-center shadow-xl text-lg bg-gray-50 backdrop-blur-md lg:font-semibold isolation-auto border-gray-50 before:absolute before:w-full before:transition-all before:duration-700 before:hover:w-full before:-left-full before:hover:left-0 before:rounded-full before:bg-green-500 hover:text-gray-50 before:-z-10 before:aspect-square before:hover:scale-150 before:hover:duration-700  px-4 py-2 overflow-hidden border-2 rounded-full group"
             >
               Empieza a intercambiar
               <svg
@@ -110,63 +113,24 @@ export default function Home() {
           </Link>
         </div>
 
-        <motion.div 
-          ref={recentProductsRef}
-          className="mt-5 mb-28 w-full"
-          style={{ opacity, y }}
-        >
-          <h2 className="text-2xl font-bold mb-2 mt-10 text-center dark:text-white">Productos Subidos Recientemente</h2>
+        <div className="mb-10">
+          <h2 className="text-2xl font-bold mb-2 mt-10 text-center dark:text-white animate-fade-up">
+            Productos Subidos Recientemente
+          </h2>
           <Slider {...settings} className="max-w-[1300px] flex mx-auto">
             {recentProducts.length > 0 ? (
               recentProducts.map((product) => (
                 <div key={product.id} className="p-4">
-                  <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700 transition-transform duration-300 hover:scale-105 hover:shadow-lg">
-                    <Link href={`/product/${product.id}`}>
-                      <Image 
-                        className="w-full max-h-[250px] min-h-[250px]" 
-                        src={product.imageProduct || '/img/placeholder.png'} 
-                        alt={product.title} 
-                        width={340}
-                        height={300}
-                      />
-                    </Link>
-                    <div className="p-5">
-                      <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white transition-all duration-300 ease-in-out hover:text-blue-700">
-                        {product.title}
-                      </h5>
-                      <p className="mb-3 font-normal text-[#4F3527] dark:text-gray-400">
-                        {product.description}
-                      </p>
-                      <Link 
-                        href={`/product/${product.id}`} 
-                        className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg transition-all duration-300 ease-in-out hover:bg-blue-800 hover:translate-x-1 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-                      >
-                        Más información
-                        <svg 
-                          className="rtl:rotate-180 w-3.5 h-3.5 ms-2 transition-transform duration-300 ease-in-out hover:translate-x-1" 
-                          aria-hidden="true" 
-                          xmlns="http://www.w3.org/2000/svg" 
-                          fill="none" 
-                          viewBox="0 0 14 10"
-                        >
-                          <path 
-                            stroke="currentColor" 
-                            strokeLinecap="round" 
-                            strokeLinejoin="round" 
-                            strokeWidth="2" 
-                            d="M1 5h12m0 0L9 1m4 4L9 9" 
-                          />
-                        </svg>
-                      </Link>
-                    </div>
-                  </div>
+                  <ProductCard product={product} />
                 </div>
               ))
             ) : (
-              <p className="text-center text-gray-500">No hay productos recientes disponibles.</p>
+              <p className="text-center text-gray-500">
+                No hay productos recientes disponibles.
+              </p>
             )}
           </Slider>
-        </motion.div>
+        </div>
       </main>
       <Footer />
     </div>
