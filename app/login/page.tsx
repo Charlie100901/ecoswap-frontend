@@ -1,13 +1,26 @@
 "use client";
 
-import { useState, ChangeEvent } from "react";
+import { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError(null);
+      }, 3000);
+  
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+  
 
   const handleLogin = async () => {
     try {
@@ -44,16 +57,19 @@ export default function Page() {
 
   return (
     <div className="relative flex items-center justify-center w-full h-screen bg-gray-100">
-      <img
+      <Image
         src="/img/background-auth.jpg"
         alt="background"
-        className="absolute inset-0 w-full h-full object-cover filter brightness-[35%]"
+        fill
+        className="absolute inset-0 object-cover filter brightness-[35%]"
+        priority
       />
+      <div className="relative z-10 max-w-md w-full bg-white rounded-lg shadow-lg p-6 mt-16 animate-jump-in">
+        <h2 className="text-2xl font-bold text-gray-800 mb-4">
+          Iniciar Sesión
+        </h2>
 
-      <div className="relative z-10 max-w-md w-full bg-white rounded-lg shadow-lg p-6 mt-16">
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Iniciar Sesión</h2>
-
-        {error && <p className="text-red-600 mb-4">{error}</p>}
+        
 
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700 mb-1">
@@ -86,9 +102,9 @@ export default function Page() {
         <div className="mb-4">
           <p className="text-gray-600">
             ¿Aún no tienes cuenta?{" "}
-            <a href="/register" className="text-green-700 hover:underline">
-              Regístrate
-            </a>
+            <Link href="/register" className="text-green-700 hover:underline">
+              Registrate
+            </Link>
           </p>
         </div>
 
@@ -99,6 +115,26 @@ export default function Page() {
           Iniciar Sesión
         </button>
       </div>
+      {error && (
+        <div
+          className="fixed bottom-4 left-4 z-50 flex animate-fade-up items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 max-w-md shadow-lg"
+          role="alert"
+        >
+          <svg
+            className="shrink-0 inline w-4 h-4 me-3"
+            aria-hidden="true"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+          >
+            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
+          </svg>
+          <span className="sr-only">Info</span>
+          <div>
+            <span className="font-medium">Danger alert!</span> {error}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
