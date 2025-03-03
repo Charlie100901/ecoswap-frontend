@@ -102,107 +102,96 @@ export default function Page() {
     };
 
     return (
-        <div className="flex flex-col min-h-screen dark:dark:bg-zinc-800">
+        <div className="flex flex-col min-h-screen bg-gray-100 dark:bg-zinc-800">
             <Header />
-            <main className="flex-grow  mx-32 p-4 mb-[100px]">
+            <main className="flex-grow mx-4 sm:mx-8 lg:mx-32 p-4 mb-12">
                 <div>
-                    <h1 className="text-center mt-14 mb-6 text-2xl font-bold dark:text-white">CARGAR PRODUCTO</h1>
+                    <h1 className="text-center mt-14 mb-6 text-3xl font-bold text-gray-800 dark:text-white">Cargar Producto</h1>
                 </div>
-                <div className="bg-white dark:bg-gray-800 shadow-lg rounded-lg p-14 mx-auto w-full">
-                    <div className="flex justify-between mx-3">
-                        <form className="w-full" onSubmit={handleSubmit}>
-                            <div className="flex justify-between">
-                                <div className="w-1/2 mr-4">
-                                    <label className="block font-medium dark:text-white">Titulo <span className="text-red-600">*</span></label>
-                                    <input
-                                        type="text"
-                                        className="block w-3/4 pt-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                        name="title"
-                                        value={formData.title} 
-                                        onChange={handleChange} 
-                                        required
-                                    />
-                                </div>
-                                <div className="w-1/2 ml-4">
-                                    <label className="block font-medium dark:text-white">Estado del producto <span className="text-red-600">*</span></label>
-                                    <select
-                                        className="block w-3/4 pt-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                        name="conditionProduct"
-                                        value={formData.conditionProduct} 
-                                        onChange={handleChange}
-                                        required
-                                    >
-                                        <option value="">Selecciona una opción</option>
-                                        <option value="nuevo">Nuevo</option>
-                                        <option value="casi nuevo">Casi Nuevo</option>
-                                        <option value="usado">Usado</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="w-1/2 mr-4 mt-5">
-                                <label className="block font-medium dark:text-white">Categoría <span className="text-red-600">*</span></label>
-                                <select
-                                    className="block w-3/4 pt-2 border border-gray-300 dark:border-gray-600 rounded-md bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                    name="category"
-                                    value={formData.category} 
-                                    onChange={handleChange}
-                                    required
-                                >
-                                    <option value="">Selecciona una opción</option>
-                                    <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
-                                    <option value="Hogar y Muebles">Hogar y Muebles</option>
-                                    <option value="Juguetes y Accesorios">Juguetes y Accesorios</option>
-                                    <option value="Libros y Entretenimiento">Libros y Entretenimiento</option>
-                                    <option value="Deportes y Aire Libre">Deportes y Aire Libre</option>
-                                    <option value="Ropa y Accesorios">Ropa y Accesorios</option>
-                                    <option value="Mascotas">Mascotas</option>
-                                    <option value="Oficina y Papelería">Oficina y Papelería</option>
-                                    <option value="Salud y Belleza">Salud y Belleza</option>
-                                    <option value="Joyería y Relojes">Joyería y Relojes</option>
-                                </select>
-                            </div>
-
-                            <div className="w-1/2 mr-4 mt-5">
-                                <label className="block font-medium dark:text-white">Descripción del Producto <span className="text-red-600">*</span></label>
-                                <textarea
-                                    className="block w-3/4 pt-2 border border-gray-300 dark:border-gray-600 rounded-md h-32 bg-gray-100 dark:bg-gray-700 dark:text-white"
-                                    name="description"
-                                    value={formData.description} 
-                                    onChange={handleChange} 
-                                    required
-                                />
-                            </div>
-
-                            <div className="w-1/2 mr-4 mt-5">
-                                <label className="block font-medium dark:text-white">Imagen del Producto <span className="text-red-600">*</span></label>
-                                <input
-                                    className="block w-3/4  border dark:text-white border-gray-300 dark:border-gray-600 rounded-md mb-12 bg-gray-100 dark:bg-gray-700"
-                                    type="file"
-                                    name="file"
-                                    accept="image/png, image/jpeg"
-                                    onChange={handleChange} 
-                                />
-                            </div>
-
-                            <button
-                                type="submit"
-                                className="text-xl w-48 h-12 rounded bg-emerald-500 text-white relative overflow-hidden group z-10 hover:text-white duration-1000"
+                <div className="bg-white dark:bg-zinc-700 shadow-lg rounded-lg p-8 mx-auto w-full max-w-3xl">
+                    <form className="w-full" onSubmit={handleSubmit}>
+                        <div className="mb-6">
+                            <label className="block font-medium text-gray-800 dark:text-white">Título <span className="text-red-600">*</span></label>
+                            <input
+                                type="text"
+                                className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md bg-gray-100 dark:bg-zinc-800 dark:text-white"
+                                name="title"
+                                value={formData.title} 
+                                onChange={handleChange} 
+                                required
+                            />
+                        </div>
+                        <div className="mb-6">
+                            <label className="block font-medium text-gray-800 dark:text-white">Estado del producto <span className="text-red-600">*</span></label>
+                            <select
+                                className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md bg-gray-100 dark:bg-zinc-800 dark:text-white"
+                                name="conditionProduct"
+                                value={formData.conditionProduct} 
+                                onChange={handleChange}
+                                required
                             >
-                                <span className="absolute bg-emerald-600 w-52 h-36 rounded-full group-hover:scale-100 scale-0 -z-10 -left-2 -top-10 group-hover:duration-500 duration-700 origin-center transform transition-all"></span>
-                                <span className="absolute bg-emerald-800 w-52 h-36 -left-2 -top-10 rounded-full group-hover:scale-100 scale-0 -z-10 group-hover:duration-700 duration-500 origin-center transform transition-all"></span>
-                                Subir Producto
-                            </button>
-                        </form>
-                    </div>
+                                <option value="">Selecciona una opción</option>
+                                <option value="nuevo">Nuevo</option>
+                                <option value="casi nuevo">Casi Nuevo</option>
+                                <option value="usado">Usado</option>
+                            </select>
+                        </div>
+                        <div className="mb-6">
+                            <label className="block font-medium text-gray-800 dark:text-white">Categoría <span className="text-red-600">*</span></label>
+                            <select
+                                className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md bg-gray-100 dark:bg-zinc-800 dark:text-white"
+                                name="category"
+                                value={formData.category} 
+                                onChange={handleChange}
+                                required
+                            >
+                                <option value="">Selecciona una opción</option>
+                                <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
+                                <option value="Hogar y Muebles">Hogar y Muebles</option>
+                                <option value="Juguetes y Accesorios">Juguetes y Accesorios</option>
+                                <option value="Libros y Entretenimiento">Libros y Entretenimiento</option>
+                                <option value="Deportes y Aire Libre">Deportes y Aire Libre</option>
+                                <option value="Ropa y Accesorios">Ropa y Accesorios</option>
+                                <option value="Mascotas">Mascotas</option>
+                                <option value="Oficina y Papelería">Oficina y Papelería</option>
+                                <option value="Salud y Belleza">Salud y Belleza</option>
+                                <option value="Joyería y Relojes">Joyería y Relojes</option>
+                            </select>
+                        </div>
+                        <div className="mb-6">
+                            <label className="block font-medium text-gray-800 dark:text-white">Descripción del Producto <span className="text-red-600">*</span></label>
+                            <textarea
+                                className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md h-32 bg-gray-100 dark:bg-zinc-800 dark:text-white"
+                                name="description"
+                                value={formData.description} 
+                                onChange={handleChange} 
+                                required
+                            />
+                        </div>
+                        <div className="mb-6">
+                            <label className="block font-medium text-gray-800 dark:text-white">Imagen del Producto <span className="text-red-600">*</span></label>
+                            <input
+                                className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md bg-gray-100 dark:bg-zinc-800 dark:text-white"
+                                type="file"
+                                name="file"
+                                accept="image/png, image/jpeg"
+                                onChange={handleChange} 
+                            />
+                        </div>
+                        <button
+                            type="submit"
+                            className="w-full py-3 mt-4 bg-green-600 text-white font-bold rounded-md hover:bg-green-700 transition-all duration-300"
+                        >
+                            Subir Producto
+                        </button>
+                    </form>
                 </div>
-
 
                 {isModalOpen && (
                     <div className={`fixed inset-0 p-4 flex justify-center items-center w-full h-full z-[1000] bg-[rgba(0,0,0,0.5)] overflow-auto font-sans transition-opacity duration-300 ${
                         isShowing ? 'opacity-100' : 'opacity-0'
                     }`}>
-                        <div className={`w-full max-w-lg bg-white shadow-lg rounded-lg p-6 relative transition-all duration-300 ${
+                        <div className={`w-full max-w-lg bg-white dark:bg-zinc-700 shadow-lg rounded-lg p-6 relative transition-all duration-300 ${
                             isShowing ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                         }`}>
                             <svg
@@ -226,12 +215,12 @@ export default function Page() {
                                     <path d="M383.841 171.838c-7.881-8.31-21.02-8.676-29.343-.775L221.987 296.732l-63.204-64.893c-8.005-8.213-21.13-8.393-29.35-.387-8.213 7.998-8.386 21.137-.388 29.35l77.492 79.561a20.687 20.687 0 0 0 14.869 6.275 20.744 20.744 0 0 0 14.288-5.694l147.373-139.762c8.316-7.888 8.668-21.027.774-29.344z" />
                                     <path d="M256 0C114.84 0 0 114.84 0 256s114.84 256 256 256 256-114.84 256-256S397.16 0 256 0zm0 470.487c-118.265 0-214.487-96.214-214.487-214.487 0-118.265 96.221-214.487 214.487-214.487 118.272 0 214.487 96.221 214.487 214.487 0 118.272-96.215 214.487-214.487 214.487z" />
                                 </svg>
-                                <h4 className={`text-xl text-gray-800 font-semibold mt-4 transition-all duration-300 ${
+                                <h4 className={`text-xl text-gray-800 dark:text-white font-semibold mt-4 transition-all duration-300 ${
                                     isShowing ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                                 }`}>
                                     ¡Producto creado exitosamente!
                                 </h4>
-                                <p className={`text-sm text-gray-500 leading-relaxed mt-2 transition-all duration-300 delay-100 ${
+                                <p className={`text-sm text-gray-500 dark:text-gray-400 leading-relaxed mt-2 transition-all duration-300 delay-100 ${
                                     isShowing ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                                 }`}>
                                     El producto ha sido agregado correctamente. Puedes seguir gestionando tus productos o crear uno nuevo.
@@ -249,7 +238,6 @@ export default function Page() {
                             </button>
                         </div>
                     </div>
-                
                 )}
             </main>
             <Footer />

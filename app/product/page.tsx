@@ -5,6 +5,7 @@ import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
+import ProductCardSkeleton from "../components/ProductCardSkeleton";
 
 interface Product {
   id: number;
@@ -21,6 +22,7 @@ export default function Page() {
   const [page, setPage] = useState<number>(0);
   const [size, setSize] = useState<number>(9);
   const [totalPages, setTotalPages] = useState<number>(0);
+  const [isCategoriesOpen, setIsCategoriesOpen] = useState<boolean>(false);
 
   const categories = [
     "Electrónica y Tecnología",
@@ -38,6 +40,7 @@ export default function Page() {
   useEffect(() => {
     const fetchProducts = async () => {
       setLoading(true);
+      setError(null); // Reset error state before fetching
       try {
         const url = selectedCategory
           ? `http://localhost:8080/api/v1/product/category/${selectedCategory}?page=${page}&size=${size}`
@@ -158,15 +161,36 @@ export default function Page() {
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center h-screen dark:bg-zinc-800">
-        <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500 mb-4 "></div>
-        <p className="text-lg text-gray-700">Cargando productos...</p>
+      <div className="dark:bg-zinc-800">
+        <Header />
+        <div className="container mx-auto p-4 mb-[100px] mt-6 ">
+          <h1 className="text-center text-3xl font-bold mb-6  dark:text-white animate-jump-in">
+            ENCUENTRA LO QUE NECESITAS
+          </h1>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: size }).map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
+          </div>
+        </div>
+        <Footer />
       </div>
     );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <div className="dark:bg-zinc-800">
+        <Header />
+        <div className="container mx-auto p-4 mb-[100px] mt-6">
+          <h1 className="text-center text-3xl font-bold mb-6 dark:text-white animate-jump-in">
+            ENCUENTRA LO QUE NECESITAS
+          </h1>
+          <div className="text-center text-red-500">{error}</div>
+        </div>
+        <Footer />
+      </div>
+    );
   }
 
   return (
@@ -181,18 +205,21 @@ export default function Page() {
         </h1>
 
         <div className="flex flex-col md:flex-row">
-          <aside className="md:w-1/4 p-4 bg-[#F4F4F4] dark:bg-zinc-800 rounded-lg shadow-lg mb-4 md:mb-0 animate-fade-up">
-            <h3 className="font-bold text-lg mb-4 dark:text-gray-300">
+          <aside className="md:w-1/4 p-4 mr-[20px] bg-white dark:bg-zinc-800 rounded-lg shadow-lg mb-4 md:mb-0 border border-gray-200 dark:border-gray-700 animate-fade-up">
+            <h3
+              className="font-bold text-lg mb-4 dark:text-gray-300 cursor-pointer md:hidden"
+              onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
+            >
               Categorías
             </h3>
-            <ul className="space-y-2">
+            <ul className={`space-y-2 ${isCategoriesOpen ? "block" : "hidden"} md:block`}>
               <li>
                 <button
                   onClick={() => {
                     setSelectedCategory(null);
                     setPage(0);
                   }}
-                  className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
+                  className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded mb-2"
                 >
                   Todas
                 </button>
@@ -204,7 +231,7 @@ export default function Page() {
                       setSelectedCategory(category);
                       setPage(0);
                     }}
-                    className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded"
+                    className="text-left w-full text-gray-900 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 p-2 rounded mb-2"
                   >
                     {category}
                   </button>

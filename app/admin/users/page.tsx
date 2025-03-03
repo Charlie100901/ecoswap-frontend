@@ -28,6 +28,7 @@ export default function Page() {
     cellphoneNumber: '',
     password: ''
   });
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   const router = useRouter();
 
@@ -125,6 +126,11 @@ export default function Page() {
     setModalOpen(true);
   };
 
+  const filteredUsers = users.filter(user =>
+    user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    user.email.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -135,14 +141,16 @@ export default function Page() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-red-500 mt-4">{error}</div>;
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 dark:bg-zinc-800">
       <Header />
       <div className="container mx-auto p-4">
-        <h1 className="text-center text-2xl font-bold mb-8">Panel de Usuarios</h1>
+        <h1 className="text-center text-2xl font-bold mb-8 text-gray-800 dark:text-white">
+          Panel de Usuarios
+        </h1>
 
         <button
           onClick={() => openModal()}
@@ -151,31 +159,41 @@ export default function Page() {
           Crear Usuario Nuevo
         </button>
 
+        <input
+          type="text"
+          placeholder="Buscar por nombre o correo"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="mb-4 p-2 border border-gray-300 rounded w-full"
+        />
+
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+          <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow">
             <thead>
-              <tr className="bg-blue-100 border-b-2 border-blue-200">
-                <th className="py-2 px-4 text-left text-sm font-semibold">Nombre</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Correo Electrónico</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Dirección</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Teléfono</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Acciones</th>
+              <tr className="bg-blue-100 dark:bg-zinc-600 border-b-2 border-blue-200 dark:border-zinc-500">
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">id</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Nombre</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Correo Electrónico</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Dirección</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Teléfono</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {users.length === 0 ? (
+              {filteredUsers.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-4">
+                  <td colSpan={5} className="text-center py-4 text-gray-500 dark:text-gray-400">
                     No hay usuarios disponibles
                   </td>
                 </tr>
               ) : (
-                users.map((user) => (
-                  <tr key={user.id} className="border-b">
-                    <td className="py-3 px-4 text-sm">{user.name}</td>
-                    <td className="py-3 px-4 text-sm">{user.email}</td>
-                    <td className="py-3 px-4 text-sm">{user.address}</td>
-                    <td className="py-3 px-4 text-sm">{user.cellphoneNumber}</td>
+                filteredUsers.map((user) => (
+                  <tr key={user.id} className="border-b dark:border-zinc-600">
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.id}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.name}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.email}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.address}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.cellphoneNumber}</td>
                     <td className="py-3 px-4 flex space-x-2">
                       <button
                         onClick={() => openModal(user)}
@@ -199,57 +217,57 @@ export default function Page() {
       </div>
 
       {isModalOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex justify-center items-center">
-          <div className="bg-white p-6 rounded shadow-lg">
-            <h2 className="text-lg font-bold mb-4">
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-90 z-50 flex justify-center items-center">
+          <div className="bg-white dark:bg-zinc-700 p-6 rounded shadow-lg w-full max-w-md mx-4">
+            <h2 className="text-lg font-bold mb-4 text-gray-800 dark:text-white">
               {isEditing ? 'Editar Usuario' : 'Crear Usuario'}
             </h2>
             <form>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Nombre</label>
+                <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-white">Nombre</label>
                 <input
                   type="text"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 dark:border-zinc-600 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Correo Electrónico</label>
+                <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-white">Correo Electrónico</label>
                 <input
                   type="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 dark:border-zinc-600 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Contraseña</label>
+                <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-white">Contraseña</label>
                 <input
                   type="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 dark:border-zinc-600 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Dirección</label>
+                <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-white">Dirección</label>
                 <input
                   type="text"
                   value={formData.address}
                   onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 dark:border-zinc-600 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white"
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium mb-1">Teléfono</label>
+                <label className="block text-sm font-medium mb-1 text-gray-800 dark:text-white">Teléfono</label>
                 <input
                   type="text"
                   value={formData.cellphoneNumber}
                   onChange={(e) =>
                     setFormData({ ...formData, cellphoneNumber: e.target.value })
                   }
-                  className="w-full border border-gray-300 rounded px-3 py-2"
+                  className="w-full border border-gray-300 dark:border-zinc-600 rounded px-3 py-2 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white"
                 />
               </div>
               <div className="flex justify-end">

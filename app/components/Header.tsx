@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
+import { Bell, X } from "lucide-react";
+import { Client } from "@stomp/stompjs";
 
 interface DecodedToken {
   role: string;
@@ -15,6 +17,10 @@ export default function Header() {
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [stompClient, setStompClient] = useState<Client | null>(null);
+  const [isModalNotificationOpen, setIsModalNotificationOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -34,6 +40,8 @@ export default function Header() {
             const data = await response.json();
             setUserName(data.name);
             localStorage.setItem("userName", data.name);
+            localStorage.setItem("userId", data.id);
+            console.log(data);
             setError(null);
           } else if (response.status === 401) {
             localStorage.removeItem("token");
@@ -66,6 +74,41 @@ export default function Header() {
       }
     }
   }, []);
+  
+
+  useEffect(() => {
+    const client = new Client({
+      brokerURL: "ws://localhost:8080/ws",
+      debug: (str) => console.log(str),
+      onConnect: () => {
+        console.log("Conectado al WebSocket");
+        const userId = localStorage.getItem("userId");
+
+        client.subscribe(`/topic/notifications/${userId}`, (message) => {
+          const newNotification = JSON.parse(message.body);
+          console.log(newNotification);
+          setNotifications((prev) => [newNotification, ...prev]);
+        });
+      },
+      onStompError: (frame) => {
+        console.error("Error en STOMP:", frame.headers["message"]);
+      },
+      onDisconnect: () => {
+        console.log("Desconectado del WebSocket");
+      },
+    });
+
+    client.activate();
+    setStompClient(client);
+
+
+    return () => {
+      if (client) {
+        client.deactivate();
+      }
+    };
+  }, []);
+
 
   useEffect(() => {
     if (
@@ -98,7 +141,7 @@ export default function Header() {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
     setUserName(null);
-    router.refresh();
+    setIsAdmin(false);
     router.push("/");
   };
 
@@ -121,8 +164,17 @@ export default function Header() {
     }
   }
 
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
+  useEffect(() => {
+    console.log("🔄 Estado actualizado de notificaciones:", notifications);
+  }, [notifications]);
+  
+
   return (
-    <header className="sticky top-0 z-50  ">
+    <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 sticky top-0 z-50">
       <nav className="bg-white border-gray-200 shadow-md dark:bg-gray-900 w-full ">
         <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 ">
           <Link
@@ -159,11 +211,12 @@ export default function Header() {
               type="button"
               className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600"
               aria-controls="mobile-menu-2"
-              aria-expanded="false"
+              aria-expanded={isMenuOpen ? "true" : "false"}
+              onClick={toggleMenu}
             >
               <span className="sr-only">Open main menu</span>
               <svg
-                className="w-6 h-6"
+                className={`w-6 h-6 ${isMenuOpen ? "hidden" : "block"}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -175,7 +228,7 @@ export default function Header() {
                 ></path>
               </svg>
               <svg
-                className="hidden w-6 h-6"
+                className={`w-6 h-6 ${isMenuOpen ? "block" : "hidden"}`}
                 fill="currentColor"
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -189,8 +242,13 @@ export default function Header() {
             </button>
           </div>
 
-          <div className="flex-grow flex justify-center " id="mobile-menu-2">
-            <ul className="flex  space-x-8 lg:flex-row lg:space-x-8 lg:mt-0">
+          <div
+            className={`${
+              isMenuOpen ? "block" : "hidden"
+            } w-full lg:flex lg:w-auto `}
+            id="mobile-menu-2"
+          >
+            <ul className="flex flex-col mt-4 lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
                 <Link
                   href="/"
@@ -352,7 +410,7 @@ export default function Header() {
                         </Link>
                       </li>
                       <li className="px-4 py-2 hover:bg-gray-100">
-                        <Link
+                        <a
                           href="#"
                           className="flex items-center gap-2 text-gray-700"
                           onClick={handleLogout}
@@ -364,11 +422,48 @@ export default function Header() {
                             height={16}
                           />
                           Cerrar sesión
-                        </Link>
+                        </a>
                       </li>
                     </ul>
                   </div>
                 </div>
+                {/* Botón de Notificaciones */}
+                <div className="relative">
+                  <button onClick={() => setIsModalNotificationOpen(true)} className="relative p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700">
+                    <Bell className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                    {notifications.length > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full px-1.5">
+                        {notifications.length}
+                      </span>
+                    )}
+                  </button>
+                </div>
+
+                {/* Modal de Notificaciones */}
+                {isModalNotificationOpen && (
+                  <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+                    <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-96 shadow-lg">
+                      <div className="flex justify-between items-center border-b pb-2">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notificaciones</h2>
+                        <button onClick={() => setIsModalNotificationOpen(false)} className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                          <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+                        </button>
+                      </div>
+                      <div className="mt-4 max-h-64 overflow-y-auto">
+                        {notifications.length > 0 ? (
+                          notifications.map((notification, index) => (
+                            <div key={index} className="p-2 border-b last:border-none dark:border-gray-700">
+                              <p className="text-sm text-gray-800 dark:text-gray-300">{notification.message}</p>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">{notification.timestamp}</span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-center text-gray-500 dark:text-gray-400">No tienes notificaciones.</p>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <>
