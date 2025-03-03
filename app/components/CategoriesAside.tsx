@@ -1,9 +1,16 @@
 "use client";
+import { useState } from "react";
 
-const CategoriesAside = ({ categories, selectedCategory, onCategorySelect }) => {
+interface CategoriesAsideProps {
+  categories: string[];
+  selectedCategory: string | null;
+  onCategorySelect: (category: string | null) => void;
+}
+
+const CategoriesAside: React.FC<CategoriesAsideProps>  = ({ categories, selectedCategory, onCategorySelect }) => {
   return (
-    <aside className="md:w-1/4 p-6 bg-white dark:bg-zinc-900 rounded-xl shadow-lg mb-4 md:mb-0 animate-fade-up border border-gray-100 dark:border-zinc-700">
-      <h3 className="font-bold text-xl mb-6 dark:text-gray-200 border-b pb-4 dark:border-zinc-700">
+    <aside className="md:w-1/4 p-6 bg-white dark:bg-zinc-900 rounded-xl shadow-lg mb-4 md:mb-0 border border-gray-100 dark:border-zinc-700">
+      <h3 className="font-bold text-xl mb-6 dark:text-gray-200 border-b pb-4 dark:border-zinc-700 ">
         Categorías
       </h3>
       <div className="space-y-2">
@@ -36,9 +43,8 @@ const CategoriesAside = ({ categories, selectedCategory, onCategorySelect }) => 
   );
 };
 
-// Función auxiliar para obtener el ícono según la categoría
-const getCategoryIcon = (category) => {
-  const icons = {
+const getCategoryIcon = (category: string) => {
+  const icons: { [key: string]: string } = {
     "Electrónica y Tecnología": "💻",
     "Hogar y Muebles": "🏠",
     "Juguetes y Accesorios": "🎮",

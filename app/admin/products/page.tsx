@@ -19,6 +19,9 @@ export default function Page() {
   const [error, setError] = useState<string | null>(null);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [productToDelete, setProductToDelete] = useState<number | null>(null);
+  const [searchTerm, setSearchTerm] = useState<string>('');
+  const [filterCategory, setFilterCategory] = useState<string>('');
+  const [filterCondition, setFilterCondition] = useState<string>('');
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -74,7 +77,7 @@ export default function Page() {
       }
 
       setProducts((prevProducts) => prevProducts.filter((product) => product.id !== productToDelete));
-      setShowModal(false); // Cerrar modal después de eliminar
+      setShowModal(false); 
     } catch (error) {
       alert((error as Error).message);
     }
@@ -90,6 +93,13 @@ export default function Page() {
     setProductToDelete(null);
   };
 
+  const filteredProducts = products.filter(product =>
+    (product.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    product.description.toLowerCase().includes(searchTerm.toLowerCase())) &&
+    (filterCategory ? product.category === filterCategory : true) &&
+    (filterCondition ? product.conditionProduct === filterCondition : true)
+  );
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
@@ -100,40 +110,75 @@ export default function Page() {
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return <div className="text-center text-red-500 mt-4">{error}</div>;
   }
 
   return (
-    <div>
+    <div className="min-h-screen bg-gray-100 dark:bg-zinc-800">
       <Header />
       <div className="container mx-auto p-4">
-        <h1 className="text-center text-2xl font-bold mb-8">Panel de Productos</h1>
+        <h1 className="text-center text-2xl font-bold mb-8 text-gray-800 dark:text-white">
+          Panel de Productos
+        </h1>
+
+        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+          <input
+            type="text"
+            placeholder="Buscar por título o descripción"
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="mb-2 sm:mb-0 p-2 border border-gray-300 rounded w-full sm:w-1/3"
+          />
+          <select
+            value={filterCategory}
+            onChange={(e) => setFilterCategory(e.target.value)}
+            className="mb-2 sm:mb-0 p-2 border border-gray-300 rounded w-full sm:w-1/3 sm:ml-2"
+          >
+            <option value="">Todas las Categorías</option>
+            <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
+            <option value="Hogar y Muebles">Hogar y Muebles</option>
+            <option value="Libros y Entretenimiento">Libros y Entretenimiento</option>
+            <option value="Mascotas">Mascotas</option>
+            <option value="Ropa y Accesorios">Ropa y Accesorios</option>
+            <option value="Deportes y Aire Libre">Deportes y Aire Libre</option>
+
+          </select>
+          <select
+            value={filterCondition}
+            onChange={(e) => setFilterCondition(e.target.value)}
+            className="p-2 border border-gray-300 rounded w-full sm:w-1/3 sm:ml-2"
+          >
+            <option value="">Todas las Condiciones</option>
+            <option value="nuevo">Nuevo</option>
+            <option value="usado">Usado</option>
+          </select>
+        </div>
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow">
+          <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow">
             <thead>
-              <tr className="bg-blue-100 border-b-2 border-blue-200">
-                <th className="py-2 px-4 text-left text-sm font-semibold">Título</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Descripción</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Categoría</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Estado</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold">Acciones</th>
+              <tr className="bg-blue-100 dark:bg-zinc-600 border-b-2 border-blue-200 dark:border-zinc-500">
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Título</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Descripción</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Categoría</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Condición</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {products.length === 0 ? (
+              {filteredProducts.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="text-center py-4">
+                  <td colSpan={5} className="text-center py-4 text-gray-500 dark:text-gray-400">
                     No hay productos disponibles
                   </td>
                 </tr>
               ) : (
-                products.map((product) => (
-                  <tr key={product.id} className="border-b">
-                    <td className="py-3 px-4 text-sm">{product.title}</td>
-                    <td className="py-3 px-4 text-sm whitespace-normal break-words max-w-prose">{product.description}</td>
-                    <td className="py-3 px-4 text-sm">{product.category}</td>
-                    <td className="py-3 px-4 text-sm">{product.conditionProduct}</td>
+                filteredProducts.map((product) => (
+                  <tr key={product.id} className="border-b dark:border-zinc-600">
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.title}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white whitespace-normal break-words max-w-prose">{product.description}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.category}</td>
+                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.conditionProduct}</td>
                     <td className="py-3 px-4 flex space-x-2">
                       <button
                         onClick={() => openModal(product.id)}
@@ -150,12 +195,11 @@ export default function Page() {
         </div>
       </div>
 
-      {/* Modal de confirmación */}
       {showModal && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-96">
-            <h2 className="text-xl font-bold mb-4">Confirmar Eliminación</h2>
-            <p>¿Estás seguro de que deseas eliminar este producto?</p>
+          <div className="bg-white dark:bg-zinc-700 p-6 rounded-lg shadow-lg w-96">
+            <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">Confirmar Eliminación</h2>
+            <p className="text-gray-800 dark:text-white">¿Estás seguro de que deseas eliminar este producto?</p>
             <div className="flex justify-end space-x-2 mt-4">
               <button
                 onClick={closeModal}

@@ -41,18 +41,18 @@ export default function Footer() {
             <Link href="/" className="text-zinc-300 hover:text-green-400 transition-colors">
               Inicio
             </Link>
-            <Link href="/productos" className="text-zinc-300 hover:text-green-400 transition-colors">
+            <Link href="/product" className="text-zinc-300 hover:text-green-400 transition-colors">
               Ver Productos
             </Link>
-            <Link href="/publicar" className="text-zinc-300 hover:text-green-400 transition-colors">
+            <Link href="/UploadProduct" className="text-zinc-300 hover:text-green-400 transition-colors">
               Publicar Producto
             </Link>
             <Link href="/sobre-nosotros" className="text-zinc-300 hover:text-green-400 transition-colors">
               Sobre Nosotros
             </Link>
-            <Link href="/blog" className="text-zinc-300 hover:text-green-400 transition-colors">
+            {/* <Link href="/blog" className="text-zinc-300 hover:text-green-400 transition-colors">
               Blog
-            </Link>
+            </Link> */}
           </nav>
         </div>
 

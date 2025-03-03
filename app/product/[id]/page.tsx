@@ -51,6 +51,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     throw new Error('Error al cargar el producto');
                 }
                 const data: Product = await response.json();
+                console.log(data);
                 setProduct(data);
                 setFadeIn(true);
             } catch (error) {
@@ -148,11 +149,11 @@ export default function Page({ params }: { params: { id: string } }) {
     };
 
     return (
-        <div className={`transition-opacity duration-700 dark:dark:bg-zinc-800 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
+        <div className={`transition-opacity duration-700 dark:bg-zinc-800 ${fadeIn ? 'opacity-100' : 'opacity-0'}`}>
             <Header />
             <div className="max-w-[1300px] mx-auto p-6 mb-[50px]">
                 <h1 className="text-3xl font-bold text-center mb-6 dark:text-white">VER PRODUCTO</h1>
-                <div className="flex justify-center items-start space-x-8">
+                <div className="flex flex-col md:flex-row justify-center items-start space-y-8 md:space-y-0 md:space-x-8">
                     <div className="flex flex-col space-y-4">
                         {[1, 2, 3].map((index) => (
                             <Image
@@ -166,7 +167,7 @@ export default function Page({ params }: { params: { id: string } }) {
                         ))}
                     </div>
 
-                    <div className="flex space-x-9">
+                    <div className="flex flex-col md:flex-row space-y-4 md:space-y-0 md:space-x-9">
                         <Image
                             src={product.imageProduct || '/img/default-product.jpeg'}
                             alt="Main Product Image"
@@ -201,7 +202,6 @@ export default function Page({ params }: { params: { id: string } }) {
                             </button>
                         </div>
                     </div>
-
                 </div>
 
                 <div className="mt-12">
@@ -209,20 +209,21 @@ export default function Page({ params }: { params: { id: string } }) {
                     {exchangeProducts.length === 0 ? (
                         <p className='dark:text-white'>No hay productos disponibles para intercambio.</p>
                     ) : (
-                        exchangeProducts.map((exchange) => (
-                                <div key={exchange.id} className="flex justify-between p-4 border rounded-md relative bg-gray-200 mb-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {exchangeProducts.map((exchange) => (
+                                <div key={exchange.id} className="flex flex-col p-4 border rounded-md bg-gray-200 dark:bg-zinc-700">
                                     <Image
                                         src={exchange.productFrom?.imageProduct || '/img/default-product.jpeg'}
                                         alt={exchange.productFrom?.title || 'Producto'}
                                         width={120}
                                         height={120}
-                                        className="rounded-md"
+                                        className="rounded-md mb-4"
                                     />
-                                    <div className="flex flex-col justify-between flex-grow ml-4">
-                                        <h3 className="text-xl font-bold">
+                                    <div className="flex flex-col flex-grow">
+                                        <h3 className="text-xl font-bold mb-2 dark:text-white">
                                             {exchange.productFrom?.title || 'Producto desconocido'}
                                         </h3>
-                                        <ul className="text-sm space-y-1">
+                                        <ul className="text-sm space-y-1 mb-4">
                                             <li className='dark:text-white'>
                                                 <span className="font-bold">Estado:</span> {exchange.productFrom?.conditionProduct || 'No especificado'}
                                             </li>
@@ -234,17 +235,18 @@ export default function Page({ params }: { params: { id: string } }) {
                                             </li>
                                         </ul>
                                         <button 
-                                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors absolute bottom-4 right-4"
+                                            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors mt-auto"
                                             onClick={() => handleExchangeRequest(exchange.id)}
                                         >
-                                            <a href='/exchangeview'> Intercambiar</a>
+                                            Intercambiar
                                         </button>
                                     </div>
-                                    <span className="absolute top-4 right-4 text-gray-500 text-xs dark:text-white">
+                                    <span className="text-gray-500 text-xs dark:text-white mt-2">
                                         Publicado el {new Date(exchange.exchangeRequestedAt).toLocaleDateString()}
                                     </span>
                                 </div>
-                        ))
+                            ))}
+                        </div>
                     )}
                 </div>
             </div>
