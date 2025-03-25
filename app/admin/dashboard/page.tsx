@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import Footer from "@/app/components/Footer";
 import Header from "@/app/components/Header";
+import config from '@/config';
 
 export default function Page() {
   const [totals, setTotals] = useState({
@@ -15,9 +16,9 @@ export default function Page() {
     async function fetchTotals() {
       try {
         const [usersRes, productsRes, exchangesRes] = await Promise.all([
-          fetch("http://localhost:8080/api/v1/users/count"),
-          fetch("http://localhost:8080/api/v1/products/counts"),
-          fetch("http://localhost:8080/api/v1/exchanges/counts"),
+          fetch(`${config.apiBaseUrl}/api/v1/users/count`),
+          fetch(`${config.apiBaseUrl}/api/v1/products/counts`),
+          fetch(`${config.apiBaseUrl}/api/v1/exchanges/counts`),
         ]);
 
         const usersData = await usersRes.json();

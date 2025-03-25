@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { useRouter } from 'next/navigation';
+import config from '@/config';
 
 interface User {
     id: number;
@@ -46,7 +47,7 @@ export default function Page({ params }: { params: { id: string } }) {
         const fetchProductDetail = async () => {
             if (!id) return;
             try {
-                const response = await fetch(`http://localhost:8080/api/v1/product/${id}`);
+                const response = await fetch(`${config.apiBaseUrl}/api/v1/product/${id}`);
                 if (!response.ok) {
                     throw new Error('Error al cargar el producto');
                 }
@@ -69,7 +70,7 @@ export default function Page({ params }: { params: { id: string } }) {
             if (!product) return;
 
             try {
-                const response = await fetch('http://localhost:8080/api/v1/exchanges', {
+                const response = await fetch(`${config.apiBaseUrl}/api/v1/exchanges`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -96,7 +97,7 @@ export default function Page({ params }: { params: { id: string } }) {
     const handleExchangeRequest = async (exchangeProductId: number) => {
         try {
             const token = localStorage.getItem('token');
-            const response = await fetch('http://localhost:8080/api/v1/select-exchange', {
+            const response = await fetch(`${config.apiBaseUrl}/api/v1/select-exchange`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

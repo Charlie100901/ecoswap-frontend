@@ -5,6 +5,7 @@ import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
 import { Bell, X } from "lucide-react";
 import { Client } from "@stomp/stompjs";
+import config from '@/config';
 
 interface DecodedToken {
   role: string;
@@ -30,7 +31,7 @@ export default function Header() {
     if (token) {
       const fetchUserName = async () => {
         try {
-          const response = await fetch("http://localhost:8080/api/v1/user/me", {
+          const response = await fetch(`${config.apiBaseUrl}/api/v1/user/me`, {
             method: "GET",
             headers: {
               Authorization: `Bearer ${token}`,

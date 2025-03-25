@@ -4,6 +4,7 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
+import config from '@/config';
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
@@ -24,7 +25,7 @@ export default function Page() {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("http://localhost:8080/auth/login", {
+      const response = await fetch(`${config.apiBaseUrl}/auth/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

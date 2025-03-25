@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/app/components/Header';
+import config from '@/config';
 
 interface Product {
   id: number;
@@ -11,6 +12,10 @@ interface Product {
   category: string;
   conditionProduct: string;
   productStatus: string;
+}
+
+interface ApiResponse {
+  products: Product[]; 
 }
 
 export default function Page() {
@@ -31,7 +36,7 @@ export default function Page() {
           throw new Error('No se encontró el token de autenticación');
         }
 
-        const response = await fetch('http://localhost:8080/api/v1/product', {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/product`, {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,
@@ -43,7 +48,7 @@ export default function Page() {
           throw new Error('Error al obtener los productos');
         }
 
-        const data: Product[] = await response.json();
+        const data: ApiResponse = await response.json();
         setProducts(data.products);
       } catch (error) {
         setError((error as Error).message);
@@ -64,7 +69,7 @@ export default function Page() {
         throw new Error('No se encontró el token de autenticación');
       }
 
-      const response = await fetch(`http://localhost:8080/api/v1/product/${productToDelete}`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/product/${productToDelete}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

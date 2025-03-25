@@ -9,6 +9,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductCard from "./components/ProductCard";
+import config from '@/config';
 
 interface Product {
   id: number;
@@ -32,7 +33,7 @@ export default function Home() {
     async function fetchProducts() {
       try {
         const response = await fetch(
-          "http://localhost:8080/api/v1/product/recent"
+          `${config.apiBaseUrl}/api/v1/product/recent`
         );
         const data: Product[] = await response.json();
         setRecentProducts(data);
@@ -81,7 +82,7 @@ export default function Home() {
             alt="Home Image"
             layout="fill"
             objectFit="cover"
-            className="absolute inset-0 w-full h-full object-cover filter brightness-[40%]"
+            className="absolute inset-0 w-full h-full object-cover filter brightness-[30%]"
           />
 
           <motion.div

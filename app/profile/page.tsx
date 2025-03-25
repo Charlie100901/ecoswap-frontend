@@ -4,6 +4,7 @@ import Image from "next/image";
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import Link from "next/link";
+import config from '@/config';
 
 interface Product {
     id: number;
@@ -21,7 +22,7 @@ export default function Page() {
         const fetchUserProducts = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await fetch(`http://localhost:8080/api/v1/product/user`,{
+                const response = await fetch(`${config.apiBaseUrl}/api/v1/product/user`,{
                     method: 'GET',
                     headers: {
                     'Authorization': `Bearer ${token}`

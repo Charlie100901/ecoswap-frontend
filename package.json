@@ -9,7 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@stomp/stompjs": "^7.0.0",
+    "@stomp/stompjs": "^7.1.0",
     "ecoswap": "file:",
     "flowbite": "^2.5.1",
     "flowbite-react": "^0.10.1",
