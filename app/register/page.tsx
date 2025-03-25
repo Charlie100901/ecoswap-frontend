@@ -4,6 +4,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import config from '@/config';
 
 export default function RegisterPage() {
   const [name, setName] = useState<string>("");
@@ -18,7 +19,7 @@ export default function RegisterPage() {
     e.preventDefault();
 
     try {
-      const response = await fetch("http://localhost:8080/auth/register", {
+      const response = await fetch(`${config.apiBaseUrl}/auth/register`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

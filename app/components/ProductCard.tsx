@@ -33,6 +33,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           alt={product.title}
           width={340}
           height={300}
+          
         />
       </a>
       <div className="flex-grow">

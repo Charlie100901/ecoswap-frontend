@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import ProductCardSkeleton from "../components/ProductCardSkeleton";
+import config from '@/config';
 
 interface Product {
   id: number;
@@ -43,8 +44,8 @@ export default function Page() {
       setError(null); // Reset error state before fetching
       try {
         const url = selectedCategory
-          ? `http://localhost:8080/api/v1/product/category/${selectedCategory}?page=${page}&size=${size}`
-          : `http://localhost:8080/api/v1/product?page=${page}&size=${size}`;
+          ? `${config.apiBaseUrl}/api/v1/product/category/${selectedCategory}?page=${page}&size=${size}`
+          : `${config.apiBaseUrl}/api/v1/product?page=${page}&size=${size}`;
 
         const response = await fetch(url);
         if (!response.ok) {
@@ -198,8 +199,7 @@ export default function Page() {
       <Header />
       <div className="container mx-auto p-4 mb-[100px] mt-6">
         <h1
-          className="text-center text-3xl font-bold mb-6 dark:text-white animate-jump-in
-"
+          className="text-center text-3xl font-bold mb-6 dark:text-white animate-fade-down"
         >
           ENCUENTRA LO QUE NECESITAS
         </h1>

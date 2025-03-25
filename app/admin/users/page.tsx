@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/app/components/Header';
+import config from '@/config';
 
 interface User {
   id: number;
@@ -39,7 +40,7 @@ export default function Page() {
         throw new Error('No se encontró el token de autenticación');
       }
 
-      const response = await fetch('http://localhost:8080/api/v1/user', {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/user`, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${token}`,
@@ -62,8 +63,8 @@ export default function Page() {
 
   const handleSave = async () => {
     const url = isEditing
-      ? `http://localhost:8080/api/v1/user/${currentUser?.id}`
-      : 'http://localhost:8080/api/v1/user';
+      ? `${config.apiBaseUrl}/api/v1/user/${currentUser?.id}`
+      : `${config.apiBaseUrl}/api/v1/user`;
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
@@ -95,7 +96,7 @@ export default function Page() {
       const token = localStorage.getItem('token');
       if (!token) throw new Error('No se encontró el token de autenticación');
 
-      const response = await fetch(`http://localhost:8080/api/v1/user/${id}`, {
+      const response = await fetch(`${config.apiBaseUrl}/api/v1/user/${id}`, {
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${token}`,

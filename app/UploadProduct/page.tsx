@@ -3,6 +3,7 @@ import { useState, ChangeEvent, FormEvent, useEffect } from "react";
 import { useRouter, useSearchParams } from 'next/navigation'; 
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import config from '@/config';
 
 interface FormData {
     title: string;
@@ -62,13 +63,13 @@ export default function Page() {
                 body: formDataToSend
             };
 
-            const response = await fetch('http://localhost:8080/api/v1/product/create', requestOptions);
+            const response = await fetch(`${config.apiBaseUrl}/api/v1/product/create`, requestOptions);
 
             if (response.ok) {
                 const newProduct = await response.json();
 
                 if (productTo) {
-                    await fetch('http://localhost:8080/api/v1/create-exchange', {
+                    await fetch(`${config.apiBaseUrl}/api/v1/create-exchange`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`,
@@ -106,9 +107,9 @@ export default function Page() {
             <Header />
             <main className="flex-grow mx-4 sm:mx-8 lg:mx-32 p-4 mb-12">
                 <div>
-                    <h1 className="text-center mt-14 mb-6 text-3xl font-bold text-gray-800 dark:text-white">Cargar Producto</h1>
+                    <h1 className="text-center mt-14 mb-6 text-3xl font-bold text-gray-800 dark:text-white animate-fade-down">Cargar Producto</h1>
                 </div>
-                <div className="bg-white dark:bg-zinc-700 shadow-lg rounded-lg p-8 mx-auto w-full max-w-3xl">
+                <div className="bg-white dark:bg-zinc-700 shadow-lg rounded-lg p-8 mx-auto w-full max-w-3xl animate-fade-up">
                     <form className="w-full" onSubmit={handleSubmit}>
                         <div className="mb-6">
                             <label className="block font-medium text-gray-800 dark:text-white">Título <span className="text-red-600">*</span></label>
