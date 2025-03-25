@@ -15,11 +15,17 @@ interface ProductCardProps {
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div
-      key={product.id}
-      className={`bg-white animate-fade-up 
-        dark:hover:shadow-lg dark:hover:bg-gray-900 dark:hover:shadow-lime-400 dark:bg-neutral-800 border border-gray-200 rounded-lg shadow-lg p-4 transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl 
-        opacity-0 translate-y-4 w-full sm:w-1/2 lg:w-11/12 flex flex-col justify-between`}
-    >
+    key={product.id}
+    className={`bg-white animate-fade-up 
+      dark:hover:shadow-lg dark:hover:bg-gray-900 dark:hover:shadow-lime-400 
+      dark:bg-neutral-800 border border-gray-200 rounded-lg shadow-lg p-4 
+      transition-all duration-300 ease-in-out hover:scale-105 hover:shadow-xl 
+      opacity-0 translate-y-4 w-full sm:w-1/2 lg:w-11/12 flex flex-col justify-between min-h-[450px]`} 
+  >
+
+
+      
+      
       <a href="#" className="flex-shrink-0">
         <Image
           className="rounded-lg max-h-[250px] min-h-[250px] w-full object-cover"
