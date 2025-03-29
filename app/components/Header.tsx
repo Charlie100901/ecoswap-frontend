@@ -3,12 +3,22 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import { useRouter, usePathname } from "next/navigation";
 import Link from "next/link";
-import { Bell, X } from "lucide-react";
+import { Bell, MessageCircle, X } from "lucide-react";
 import { Client } from "@stomp/stompjs";
-import config from '@/config';
+import config from "@/config";
+import { useChat } from "../hooks/useChat";
 
 interface DecodedToken {
   role: string;
+}
+
+interface ChatMessage {
+  id?: number;
+  senderId: number; // ID del usuario que envía el mensaje
+  receiverId: number; // ID del usuario que recibe el mensaje
+  content: string;
+  exchangeId?: number; // ID del intercambio
+  timestamp: string; // Fecha y hora del mensaje
 }
 
 export default function Header() {
@@ -22,6 +32,11 @@ export default function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isModalNotificationOpen, setIsModalNotificationOpen] = useState(false);
+  const [isModalChatOpen, setIsModalChatOpen] = useState(false);
+  const [activeChat, setActiveChat] = useState<ChatMessage | null>(null);
+  const [activeChatMessages, setActiveChatMessages] = useState<ChatMessage[]>([]);
+  const [chats, setChats] = useState<any[]>([]);
+  // const { sendMessage } = useChat(senderId, receiverId, exchangeId);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -75,7 +90,6 @@ export default function Header() {
       }
     }
   }, []);
-  
 
   useEffect(() => {
     const client = new Client({
@@ -102,7 +116,6 @@ export default function Header() {
     client.activate();
     setStompClient(client);
 
-
     return () => {
       if (client) {
         client.deactivate();
@@ -110,6 +123,25 @@ export default function Header() {
     };
   }, []);
 
+  const fetchActiveChatMessages = async (chat: ChatMessage) => {
+    try {
+      const response = await fetch(
+        `${config.apiBaseUrl}/api/v1/chat/message/exchange/${chat.senderId}`
+      );
+      if (!response.ok) {
+        throw new Error("Error al obtener los mensajes del chat activo");
+      }
+      const data: ChatMessage[] = await response.json();
+      setActiveChatMessages(data);
+    } catch (error) {
+      console.error("Error al obtener los mensajes del chat activo:", error);
+    }
+  };
+  
+  const handleChatClick = (chat: ChatMessage) => {
+    setActiveChat(chat);
+    fetchActiveChatMessages(chat);
+  };
 
   useEffect(() => {
     if (
@@ -123,6 +155,28 @@ export default function Header() {
       document.documentElement.classList.remove("dark");
     }
   }, []);
+
+  useEffect(() => {
+    const fetchChats = async () => {
+      const userId = localStorage.getItem("userId");
+      if (!userId) return;
+  
+      try {
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/chat/message/exchange/${userId}`);
+        if (!response.ok) {
+          throw new Error("Error al obtener los chats");
+        }
+        const data = await response.json();
+        setChats(data);
+      } catch (error) {
+        console.error("Error al obtener los chats:", error);
+      }
+    };
+  
+    if (isModalChatOpen) {
+      fetchChats();
+    }
+  }, [isModalChatOpen]);
 
   const handleDarkModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
@@ -172,7 +226,6 @@ export default function Header() {
   useEffect(() => {
     console.log("🔄 Estado actualizado de notificaciones:", notifications);
   }, [notifications]);
-  
 
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 sticky top-0 z-50">
@@ -430,7 +483,10 @@ export default function Header() {
                 </div>
                 {/* Botón de Notificaciones */}
                 <div className="relative">
-                  <button onClick={() => setIsModalNotificationOpen(true)} className="relative p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700">
+                  <button
+                    onClick={() => setIsModalNotificationOpen(true)}
+                    className="relative p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
                     <Bell className="h-6 w-6 text-gray-700 dark:text-gray-200" />
                     {notifications.length > 0 && (
                       <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full px-1.5">
@@ -440,26 +496,125 @@ export default function Header() {
                   </button>
                 </div>
 
+                <div className="relative">
+                  {/* Botón de Chat */}
+                  <button
+                    onClick={() => setIsModalChatOpen(!isModalChatOpen)}
+                    className="relative p-2 rounded-full bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700"
+                  >
+                    <MessageCircle className="h-6 w-6 text-gray-700 dark:text-gray-200" />
+                  </button>
+
+                  {/* Cuadro desplegable de mensajes */}
+                  {isModalChatOpen && (
+                    <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-900 rounded-md shadow-lg z-50">
+                      <div className="flex justify-between items-center border-b pb-2 px-4 py-2">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Chats
+                        </h2>
+                        <button
+                          onClick={() => setIsModalChatOpen(false)}
+                          className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                        >
+                          <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+                        </button>
+                      </div>
+                      <div className="mt-4 max-h-64 overflow-y-auto px-4">
+                        {chats.length > 0 ? (
+                          chats.map((chat, index) => (
+                            <div
+                              key={index}
+                              className="p-2 border-b last:border-none dark:border-gray-700 cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800"
+                              onClick={() => handleChatClick(chat)} // Llama a handleChatClick
+                            >
+                              <p className="text-sm text-gray-800 dark:text-gray-300">
+                                <strong>{chat.senderName || "Usuario"}:</strong> {chat.content}
+                              </p>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {new Date(chat.timestamp).toLocaleString()}
+                              </span>
+                            </div>
+                          ))
+                        ) : (
+                          <p className="text-center text-gray-500 dark:text-gray-400">
+                            No tienes chats.
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {activeChat && (
+  <div className="fixed bottom-4 left-4 w-80 bg-white dark:bg-gray-900 rounded-lg shadow-lg z-50">
+    <div className="flex justify-between items-center border-b p-2">
+      <h2 className="text-sm font-semibold text-gray-900 dark:text-white">
+        Chat con {activeChat.senderId || "Usuario"}
+      </h2>
+      <button
+        onClick={() => setActiveChat(null)} // Cierra el chat activo
+        className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+      >
+        <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
+      </button>
+    </div>
+    <div className="p-2 max-h-64 overflow-y-auto">
+      {activeChatMessages.map((msg, index) => (
+        <div key={index} className="mb-2">
+          <strong>{msg.senderId === activeChat.senderId ? "Tú" : "Ellos"}:</strong> {msg.content}
+        </div>
+      ))}
+    </div>
+    <div className="p-2 border-t">
+      <input
+        type="text"
+        placeholder="Escribe un mensaje..."
+        className="w-full p-2 border rounded"
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            // sendMessage(e.currentTarget.value);
+            // e.currentTarget.value = "";
+          }
+        }}
+      />
+    </div>
+  </div>
+)}
+
                 {/* Modal de Notificaciones */}
                 {isModalNotificationOpen && (
                   <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
                     <div className="bg-white dark:bg-gray-900 p-6 rounded-lg w-96 shadow-lg">
                       <div className="flex justify-between items-center border-b pb-2">
-                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Notificaciones</h2>
-                        <button onClick={() => setIsModalNotificationOpen(false)} className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                        <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          Notificaciones
+                        </h2>
+                        <button
+                          onClick={() => setIsModalNotificationOpen(false)}
+                          className="p-1 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700"
+                        >
                           <X className="h-5 w-5 text-gray-700 dark:text-gray-200" />
                         </button>
                       </div>
                       <div className="mt-4 max-h-64 overflow-y-auto">
                         {notifications.length > 0 ? (
                           notifications.map((notification, index) => (
-                            <div key={index} className="p-2 border-b last:border-none dark:border-gray-700">
-                              <p className="text-sm text-gray-800 dark:text-gray-300">{notification.message}</p>
-                              <span className="text-xs text-gray-500 dark:text-gray-400">{notification.timestamp}</span>
+                            <div
+                              key={index}
+                              className="p-2 border-b last:border-none dark:border-gray-700"
+                            >
+                              <p className="text-sm text-gray-800 dark:text-gray-300">
+                                {notification.message}
+                              </p>
+                              <span className="text-xs text-gray-500 dark:text-gray-400">
+                                {notification.timestamp}
+                              </span>
                             </div>
                           ))
                         ) : (
-                          <p className="text-center text-gray-500 dark:text-gray-400">No tienes notificaciones.</p>
+                          <p className="text-center text-gray-500 dark:text-gray-400">
+                            No tienes notificaciones.
+                          </p>
                         )}
                       </div>
                     </div>
