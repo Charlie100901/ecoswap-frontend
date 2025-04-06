@@ -122,7 +122,7 @@ export default function Page() {
     <div className="min-h-screen bg-gray-100 dark:bg-zinc-800">
       <Header />
       <div className="container mx-auto p-4">
-        <h1 className="text-center text-2xl font-bold mb-8 text-gray-800 dark:text-white">
+        <h1 className="text-center text-2xl font-bold mb-8 text-gray-800 dark:text-white animate-fade-down mt-6">
           Panel de Productos
         </h1>
 

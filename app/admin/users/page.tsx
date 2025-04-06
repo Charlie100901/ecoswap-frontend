@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Header from '@/app/components/Header';
 import config from '@/config';
+import Footer from '@/app/components/Footer';
 
 interface User {
   id: number;
@@ -135,8 +136,10 @@ export default function Page() {
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-screen">
+        <Header />
         <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-green-500 mb-4"></div>
         <p className="text-lg text-gray-700">Cargando usuarios...</p>
+        <Footer />
       </div>
     );
   }
@@ -146,10 +149,10 @@ export default function Page() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-zinc-800">
+    <div className="min-h-screen bg-gray-100 dark:bg-zinc-800 ">
       <Header />
       <div className="container mx-auto p-4">
-        <h1 className="text-center text-2xl font-bold mb-8 text-gray-800 dark:text-white">
+        <h1 className="text-center text-2xl font-bold mt-6 mb-8 text-gray-800 dark:text-white animate-fade-down">
           Panel de Usuarios
         </h1>
 
