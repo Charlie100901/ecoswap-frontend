@@ -3,7 +3,8 @@
 import { useEffect, useState } from "react";
 import Footer from "@/app/components/Footer";
 import Header from "@/app/components/Header";
-import config from '@/config';
+import config from "@/config";
+import Link from "next/link";
 
 export default function Page() {
   const [totals, setTotals] = useState({
@@ -42,14 +43,14 @@ export default function Page() {
       <Header />
       <main className="flex-grow mb-9 mx-4 sm:mx-8 lg:mx-32 p-4">
         <div>
-          <h1 className="text-center mt-14 mb-12 text-3xl font-bold text-gray-800 dark:text-white">
+          <h1 className="text-center mt-14 mb-12 text-3xl font-bold text-gray-800 dark:text-white animate-fade-down">
             ¡Bienvenido, Administrador!
           </h1>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mx-auto mt-6">
-          <a
-            href="#"
-            className="block p-6 border border-gray-300 bg-white rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300"
+          <Link
+            href="/admin/users"
+            className="block p-6 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300 hover:shadow-xl dark:hover:shadow-lime-400 dark:hover:shadow animate-fade animate-duration-700"
           >
             <h5 className="mb-2 text-7xl font-bold tracking-tight text-green-600 dark:text-white text-center">
               {totals.users}
@@ -57,10 +58,10 @@ export default function Page() {
             <p className="font-normal text-gray-700 dark:text-gray-400 text-center">
               Total de Usuarios
             </p>
-          </a>
-          <a
-            href="#"
-            className="block p-6 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300"
+          </Link>
+          <Link
+            href="/admin/products"
+            className="block p-6 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300 hover:shadow-xl dark:hover:shadow-lime-400 dark:hover:shadow animate-fade animate-duration-700"
           >
             <h5 className="mb-2 text-7xl font-bold tracking-tight text-green-600 dark:text-white text-center">
               {totals.products}
@@ -68,10 +69,11 @@ export default function Page() {
             <p className="font-normal text-gray-700 dark:text-gray-400 text-center">
               Total de Productos
             </p>
-          </a>
-          <a
-            href="#"
-            className="block p-6 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300"
+          </Link>
+
+          <Link
+            href="/admin/exchanges"
+            className="block p-6 bg-white border border-gray-300 rounded-lg shadow hover:bg-gray-100 dark:bg-zinc-700 dark:border-zinc-600 dark:hover:bg-zinc-600 transition-all duration-300 hover:shadow-xl dark:hover:shadow-lime-400 dark:hover:shadow"
           >
             <h5 className="mb-2 text-7xl font-bold tracking-tight text-green-600 dark:text-white text-center">
               {totals.exchanges}
@@ -79,7 +81,7 @@ export default function Page() {
             <p className="font-normal text-gray-700 dark:text-gray-400 text-center">
               Total de Intercambios
             </p>
-          </a>
+          </Link>
         </div>
         <div className="mt-12">
           <h2 className="text-center font-bold text-2xl mt-4 text-gray-800 dark:text-white">
