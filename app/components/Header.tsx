@@ -297,6 +297,18 @@ export default function Header() {
                     </Link>
                   </li>
                   <li>
+                  <Link
+                      href={`/admin/exchanges`}
+                      className={`block py-2 px-3 rounded md:p-0 ${
+                        isActiveLink("/admin/exchanges")
+                          ? "text-green-600 font-bold dark:text-green-400"
+                          : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
+                      }`}
+                    >
+                      Predicción
+                    </Link>
+                  </li>
+                  <li>
                     <Link
                       href={`/admin/users`}
                       className={`block py-2 px-3 rounded md:p-0 ${
