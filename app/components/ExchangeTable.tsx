@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import config from '@/config';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import ManualPredictionForm from './ManualPredictionForm';
 
 interface User {
   id: number;
@@ -57,6 +58,7 @@ export default function ExchangeTable() {
   const [showModal, setShowModal] = useState(false);
   const [predictionResult, setPredictionResult] = useState<PredictionResult | null>(null);
   const [predictingExchange, setPredictingExchange] = useState<ExchangeDTO | null>(null);
+  const [showManualForm, setShowManualForm] = useState(false);
 
   useEffect(() => {
     const fetchExchanges = async () => {
@@ -131,6 +133,12 @@ export default function ExchangeTable() {
       setPredictionResult(null);
       setShowModal(true);
     }
+  };
+
+  const handleManualPredictionResult = (result: PredictionResult) => {
+    setPredictionResult(result);
+    setShowModal(true);
+    setShowManualForm(false);
   };
 
   const PredictionModal = () => {
@@ -233,7 +241,40 @@ export default function ExchangeTable() {
   }
 
   return (
-    <>
+    <div className="bg-white dark:bg-zinc-800 p-6 rounded-lg shadow-md">
+      <div className="mb-6">
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-2">
+          Intercambios Disponibles
+        </h2>
+        <p className="text-gray-600 dark:text-gray-400">
+          En esta vista puedes ver todos los intercambios disponibles. Para cada intercambio puedes:
+        </p>
+        <ul className="list-disc list-inside text-gray-600 dark:text-gray-400 mt-2 space-y-1">
+          <li>Ver los detalles del producto ofrecido y solicitado</li>
+          <li>Obtener una predicción de éxito del intercambio</li>
+        </ul>
+      </div>
+
+      {showManualForm && (
+        <div className="mb-6">
+          <ManualPredictionForm onPredictionResult={handleManualPredictionResult} />
+        </div>
+      )}
+
+      <div className="flex justify-between items-center mb-4">
+        <div className="flex space-x-2">
+          <button
+            onClick={() => setShowManualForm(!showManualForm)}
+            className="flex items-center space-x-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clipRule="evenodd" />
+            </svg>
+            <span>{showManualForm ? 'Ocultar' : 'Mostrar'} Predicción Manual</span>
+          </button>
+        </div>
+      </div>
+
       <div className="overflow-x-auto">
         <table className="min-w-full bg-white dark:bg-zinc-800 shadow-md rounded-lg">
           <thead className="bg-gray-50 dark:bg-zinc-700">
@@ -362,6 +403,6 @@ export default function ExchangeTable() {
         </table>
       </div>
       <PredictionModal />
-    </>
+    </div>
   );
 }

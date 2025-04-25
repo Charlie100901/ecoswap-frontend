@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import config from '@/config';
+import { ToastContainer, toast } from "react-toastify";
 
 export default function RegisterPage() {
   const [name, setName] = useState<string>("");
@@ -35,10 +36,20 @@ export default function RegisterPage() {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
+        toast.success("Usuario registrado exitosamente",{
+          position: "top-right",
+          theme: "colored"
+        })
         localStorage.setItem("token", data.jwt);
         router.push("/");
       } else {
+        const data = await response.json();
+        Object.entries(data).forEach(([field, errorMessage]) => {
+          toast.error(`${errorMessage}`, {
+            position: "top-right",
+            theme: "colored"
+          });
+        });
         setError("Error al registrar. Por favor, intenta nuevamente.");
       }
     } catch (err) {
@@ -74,8 +85,8 @@ export default function RegisterPage() {
             <input
               type="text"
               id="name"
-              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-              placeholder="Ingresa tu nombre completo"
+              className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 uppercase"
+              placeholder="John Doe"
               value={name}
               onChange={handleChange(setName)}
               required
@@ -117,8 +128,9 @@ export default function RegisterPage() {
               Teléfono <span className="text-red-600">*</span>
             </label>
             <input
-              type="text"
+              type="number"
               id="cellphone"
+              minLength={10}
               className="w-full p-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
               placeholder="Ingresa tu teléfono"
               value={cellphoneNumber}
@@ -160,6 +172,7 @@ export default function RegisterPage() {
           </button>
         </form>
       </div>
+      <ToastContainer />
     </div>
   );
 }

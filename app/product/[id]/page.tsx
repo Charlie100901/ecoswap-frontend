@@ -5,6 +5,7 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { useRouter } from 'next/navigation';
 import config from '@/config';
+import { X } from 'lucide-react';
 
 interface User {
     id: number;
@@ -41,6 +42,8 @@ export default function Page({ params }: { params: { id: string } }) {
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<string | null>(null);
     const [fadeIn, setFadeIn] = useState<boolean>(false);
+    const [showConfirmationModal, setShowConfirmationModal] = useState(false);
+    const [selectedExchange, setSelectedExchange] = useState<ExchangeProduct | null>(null);
     const router = useRouter();
 
     useEffect(() => {
@@ -94,7 +97,14 @@ export default function Page({ params }: { params: { id: string } }) {
         }
     }, [product]);
 
-    const handleExchangeRequest = async (exchangeProductId: number) => {
+    const handleExchangeRequest = async (exchangeProduct: ExchangeProduct) => {
+        setSelectedExchange(exchangeProduct);
+        setShowConfirmationModal(true);
+    };
+
+    const confirmExchange = async () => {
+        if (!selectedExchange) return;
+
         try {
             const token = localStorage.getItem('token');
             const response = await fetch(`${config.apiBaseUrl}/api/v1/select-exchange`, {
@@ -104,7 +114,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     'Authorization': `Bearer ${token}`
                 },
                 body: JSON.stringify({
-                    id: exchangeProductId,
+                    id: selectedExchange.id,
                     productFrom: { id: product?.id },
                 }),
             });
@@ -117,17 +127,73 @@ export default function Page({ params }: { params: { id: string } }) {
     
             // Save exchange details in local storage
             localStorage.setItem('exchangeProduct', JSON.stringify({
-                id: exchangeProductId,
+                id: selectedExchange.id,
                 productFrom: product,
                 productTo: result.productFrom,
             }));
     
+            setShowConfirmationModal(false);
             router.push('/exchangeview');
         } catch (error) {
             setError((error as Error).message);
+            setShowConfirmationModal(false);
         }
     };
-    
+
+    const ConfirmationModal = () => {
+        if (!showConfirmationModal || !selectedExchange) return null;
+
+        return (
+            <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div className="bg-white dark:bg-zinc-800 rounded-lg p-6 max-w-md w-full mx-4 relative">
+                    <button 
+                        onClick={() => setShowConfirmationModal(false)}
+                        className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                        <X size={24} />
+                    </button>
+
+                    <h3 className="text-xl font-bold mb-4 text-gray-900 dark:text-white">
+                        Confirmar Intercambio
+                    </h3>
+
+                    <div className="space-y-4">
+                        <div className="bg-gray-50 dark:bg-zinc-700 p-4 rounded-lg">
+                            <h4 className="font-semibold text-gray-900 dark:text-white mb-2">
+                                Detalles del Intercambio
+                            </h4>
+                            <div className="grid grid-cols-2 gap-2 text-sm">
+                                <div className="text-gray-600 dark:text-gray-300">Tu Producto:</div>
+                                <div className="text-gray-900 dark:text-white">{product?.title}</div>
+                                <div className="text-gray-600 dark:text-gray-300">Producto a Intercambiar:</div>
+                                <div className="text-gray-900 dark:text-white">{selectedExchange.productFrom.title}</div>
+                            </div>
+                        </div>
+
+                        <p className="text-gray-700 dark:text-gray-300">
+                            ¿Estás seguro de que deseas iniciar el proceso de intercambio?
+                        </p>
+
+                        <div className="flex justify-end space-x-4 mt-6">
+                            <button
+                                onClick={() => setShowConfirmationModal(false)}
+                                className="px-4 py-2 bg-gray-200 dark:bg-zinc-600 text-gray-800 dark:text-white rounded-md hover:bg-gray-300 dark:hover:bg-zinc-500 transition-colors"
+                            >
+                                Cancelar
+                            </button>
+                            <button
+                                onClick={confirmExchange}
+                                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                            >
+                                Confirmar
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center h-screen">
@@ -237,7 +303,7 @@ export default function Page({ params }: { params: { id: string } }) {
                                         </ul>
                                         <button 
                                             className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-colors mt-auto"
-                                            onClick={() => handleExchangeRequest(exchange.id)}
+                                            onClick={() => handleExchangeRequest(exchange)}
                                         >
                                             Intercambiar
                                         </button>
@@ -252,6 +318,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 </div>
             </div>
             <Footer />
+            <ConfirmationModal />
         </div>
     );
 }
