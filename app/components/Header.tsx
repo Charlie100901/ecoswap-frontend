@@ -7,6 +7,7 @@ import { Bell, X } from "lucide-react";
 import { Client } from "@stomp/stompjs";
 import config from "@/config";
 import ChatMessage from "./ChatMessage";
+import { ToastContainer, toast } from "react-toastify";
 
 interface DecodedToken {
   role: string;
@@ -140,6 +141,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
+    localStorage.removeItem("userId")
     setUserName(null);
     setIsAdmin(false);
     router.push("/");
@@ -150,7 +152,11 @@ export default function Header() {
   ) => {
     if (!localStorage.getItem("token")) {
       e.preventDefault();
-      router.push("/login");
+      toast.error("Debes iniciar sesión para publicar un producto", {
+        theme: "colored",
+        position: "top-right"
+      })
+      // router.push("/login");
     }
   };
 
@@ -168,9 +174,9 @@ export default function Header() {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  useEffect(() => {
-    console.log("🔄 Estado actualizado de notificaciones:", notifications);
-  }, [notifications]);
+  // useEffect(() => {
+  //   console.log("🔄 Estado actualizado de notificaciones:", notifications);
+  // }, [notifications]);
 
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 sticky top-0 z-50">
@@ -376,7 +382,7 @@ export default function Header() {
                 <div className="relative group">
                   <div className="flex items-center dark:hover:bg-black hover:bg-gray-100 hover:rounded hover:cursor-pointer p-2">
                     <span className="text-gray-900 mt-2 mr-2 dark:text-white">
-                      {userName}
+                      {userName.toUpperCase()}
                     </span>
                     {/* <img src="/img/henry.jpg" alt="User Avatar" className="w-[30px] h-10 rounded-full" /> */}
                     {isDarkMode ? (
@@ -514,6 +520,7 @@ export default function Header() {
             )}
           </div>
         </div>
+        <ToastContainer/>
       </nav>
     </header>
   );

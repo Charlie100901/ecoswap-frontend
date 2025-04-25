@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import Header from "../components/Header";
 import Footer from "../components/Footer";
 import config from '@/config';
+import { ToastContainer, toast } from "react-toastify";
 
 interface FormData {
     title: string;
@@ -67,7 +68,7 @@ export default function Page() {
 
             if (response.ok) {
                 const newProduct = await response.json();
-
+                
                 if (productTo) {
                     await fetch(`${config.apiBaseUrl}/api/v1/create-exchange`, {
                         method: 'POST',
@@ -91,6 +92,13 @@ export default function Page() {
                     description: ''
                 });
             } else {
+                const data = await response.json(); 
+                Object.entries(data).forEach(([field, errorMessage]) => {
+                    toast.error(`${errorMessage}`, {
+                      position: "top-right",
+                      theme: "colored"
+                    });
+                });
                 console.error('Error al subir el producto:', response.statusText);
             }
         } catch (error) {
@@ -174,8 +182,9 @@ export default function Page() {
                             <input
                                 className="block w-full mt-2 p-2 border border-gray-300 dark:border-zinc-600 rounded-md bg-gray-100 dark:bg-zinc-800 dark:text-white"
                                 type="file"
+                                required
                                 name="file"
-                                accept="image/png, image/jpeg"
+                                accept="image/*"
                                 onChange={handleChange} 
                             />
                         </div>
@@ -240,6 +249,7 @@ export default function Page() {
                         </div>
                     </div>
                 )}
+                <ToastContainer />
             </main>
             <Footer />
         </div>

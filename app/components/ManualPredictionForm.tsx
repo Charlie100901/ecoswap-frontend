@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import config from '@/config';
 
 interface PredictionResult {
@@ -24,6 +24,39 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const response = await fetch(`${config.apiBaseUrl}/api/v1/product`, {
+          headers: {
+            'Authorization': `Bearer ${token}`
+          }
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al obtener los productos');
+        }
+        const data = await response.json();
+        const currentDate = new Date();
+          const productsWithDaysPublished = data.products.map(product => {
+            const releaseDate = new Date(product.releaseDate);
+            console.log("release",releaseDate);
+            console.log("current",currentDate);
+            const daysPublished = Math.floor((currentDate.getTime() - releaseDate.getTime()) / (1000 * 60 * 60 * 24));
+            return { ...product, daysPublished };
+          });
+          console.log("productsWithDaysPublished", productsWithDaysPublished);
+          setProducts(productsWithDaysPublished);
+      } catch (err) {
+        setError((err as Error).message);
+      }
+    };
+
+    fetchProducts();
+  }, []);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -75,14 +108,27 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
               ID Producto
             </label>
-            <input
-              type="number"
+            <select
               value={formData.productToId}
-              onChange={(e) => setFormData({ ...formData, productToId: e.target.value })}
+              onChange={(e) => {
+                const selectedProductId = e.target.value;
+                const selectedProduct = products.find(product => product.id === parseInt(selectedProductId));
+                setFormData({ 
+                  ...formData, 
+                  productToId: selectedProductId, 
+                  daysPublished: selectedProduct ? selectedProduct.daysPublished.toString() : '' 
+                });
+              }}
               className="w-full px-3 py-2 border rounded-lg bg-gray-50 dark:bg-zinc-700 dark:text-white text-sm"
               required
-              placeholder="ID del producto"
-            />
+            >
+              <option value="">Seleccione un producto</option>
+              {products.map((product) => (
+                <option key={product.id} value={product.id}>
+                  {product.title}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>
@@ -95,13 +141,14 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
               onChange={(e) => setFormData({ ...formData, daysPublished: e.target.value })}
               className="w-full px-3 py-2 border rounded-lg bg-gray-50 dark:bg-zinc-700 dark:text-white text-sm"
               required
+              readOnly
               placeholder="Número de días"
             />
           </div>
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Interacciones
+              Número de interacciones del producto
             </label>
             <input
               type="number"
@@ -115,7 +162,7 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
 
           <div>
             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Historial
+              Número de intercambios exitosos del usuario
             </label>
             <input
               type="number"
@@ -129,7 +176,7 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
 
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
-            Calificación
+            Calificación del usuario
           </label>
           <select
             value={formData.userRatingCategory}
@@ -148,14 +195,21 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             Ubicación
           </label>
-          <input
-            type="text"
+          <select
             value={formData.location}
             onChange={(e) => setFormData({ ...formData, location: e.target.value })}
             className="w-full px-3 py-2 border rounded-lg bg-gray-50 dark:bg-zinc-700 dark:text-white text-sm"
             required
-            placeholder="medellin - santa marta - cartagena"
-          />
+          >
+            <option value="">Seleccione una ciudad</option>
+            <option value="barranquilla">Barranquilla</option>
+            <option value="medellin">Medellín</option>
+            <option value="bogota">Bogotá</option>
+            <option value="cartagena">Cartagena</option>
+            <option value="cali">Cali</option>
+            <option value="santa marta">Santa Marta</option>
+            <option value="riohacha">Riohacha</option>
+          </select>
         </div>
 
         {error && (
@@ -173,4 +227,4 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
       </form>
     </div>
   );
-} 
+}

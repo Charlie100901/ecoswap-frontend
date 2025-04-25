@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
 import config from '@/config';
+import { ToastContainer, toast } from "react-toastify";
+
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
@@ -42,6 +44,10 @@ export default function Page() {
         router.push("/");
       } else {
         setError("Correo o contraseña incorrectos.");
+        toast.error("Correo o contraseña incorrectos",{
+          theme: "colored",
+          position: "top-right"
+        })
       }
     } catch (error) {
       setError("Ocurrió un error, por favor intenta nuevamente.");
@@ -116,26 +122,7 @@ export default function Page() {
           Iniciar Sesión
         </button>
       </div>
-      {error && (
-        <div
-          className="fixed bottom-4 left-4 z-50 flex animate-fade-up items-center p-4 text-sm text-red-800 border border-red-300 rounded-lg bg-red-50 dark:bg-gray-800 dark:text-red-400 dark:border-red-800 max-w-md shadow-lg"
-          role="alert"
-        >
-          <svg
-            className="shrink-0 inline w-4 h-4 me-3"
-            aria-hidden="true"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="currentColor"
-            viewBox="0 0 20 20"
-          >
-            <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z" />
-          </svg>
-          <span className="sr-only">Info</span>
-          <div>
-            <span className="font-medium">Danger alert!</span> {error}
-          </div>
-        </div>
-      )}
+      <ToastContainer />
     </div>
   );
 }
