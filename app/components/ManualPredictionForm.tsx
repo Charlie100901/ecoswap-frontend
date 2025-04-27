@@ -24,7 +24,7 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
   });
 
   const [error, setError] = useState<string | null>(null);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState<{ id: number; title: string; daysPublished: number }[]>([]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -39,9 +39,9 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
         if (!response.ok) {
           throw new Error('Error al obtener los productos');
         }
-        const data = await response.json();
+        const data: { products: { id: number; title: string; releaseDate: string }[] } = await response.json();
         const currentDate = new Date();
-          const productsWithDaysPublished = data.products.map(product => {
+          const productsWithDaysPublished = data.products.map((product: { id: number; title: string; releaseDate: string }) => {
             const releaseDate = new Date(product.releaseDate);
             console.log("release",releaseDate);
             console.log("current",currentDate);
