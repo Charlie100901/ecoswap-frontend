@@ -13,9 +13,16 @@ interface DecodedToken {
   role: string;
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function Header() {
   const [userName, setUserName] = useState<string | null>(
-    localStorage.getItem("userName")
+    getLocalStorage("userName")
   );
   const [error, setError] = useState<string | null>(null);
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
@@ -29,7 +36,7 @@ export default function Header() {
   const pathname = usePathname();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getLocalStorage("token");
 
     if (token) {
       const fetchUserName = async () => {
@@ -68,7 +75,7 @@ export default function Header() {
   }, [router]);
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
+    const token = getLocalStorage("token");
 
     if (token) {
       const decodedToken = decodeJwt(token);
@@ -150,7 +157,7 @@ export default function Header() {
   const handlePublishClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>
   ) => {
-    if (!localStorage.getItem("token")) {
+    if (!getLocalStorage("token")) {
       e.preventDefault();
       toast.error("Debes iniciar sesión para publicar un producto", {
         theme: "colored",

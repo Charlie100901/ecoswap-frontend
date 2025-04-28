@@ -7,12 +7,18 @@ import Header from "@/app/components/Header";
 import { jwtDecode } from "jwt-decode";
 
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function ExchangesPage() {
     const router = useRouter();
     
     useEffect(() => {
-        const token = localStorage.getItem('token')
-        console.log(token)
+      const token = getLocalStorage('token');
     
         if (!token) {
           router.push('/')

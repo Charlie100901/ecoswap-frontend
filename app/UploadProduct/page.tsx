@@ -14,6 +14,13 @@ interface FormData {
     description: string;
 }
 
+const getLocalStorage = (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key);
+    }
+    return null;
+  };
+
 export default function Page() {
     const [formData, setFormData] = useState<FormData>({
         title: '',
@@ -54,7 +61,7 @@ export default function Page() {
         }
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
 
             const requestOptions: RequestInit = {
                 method: 'POST',

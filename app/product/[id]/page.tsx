@@ -35,6 +35,14 @@ interface ExchangeProduct {
     exchangeRespondedAt: string;
 }
 
+const getLocalStorage = (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key);
+    }
+    return null;
+  };
+  
+
 export default function Page({ params }: { params: { id: string } }) {
     const { id } = params;
     const [product, setProduct] = useState<Product | null>(null);
@@ -106,7 +114,7 @@ export default function Page({ params }: { params: { id: string } }) {
         if (!selectedExchange) return;
 
         try {
-            const token = localStorage.getItem('token');
+            const token = getLocalStorage('token');
             const response = await fetch(`${config.apiBaseUrl}/api/v1/select-exchange`, {
                 method: 'POST',
                 headers: {
