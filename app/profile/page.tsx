@@ -36,6 +36,13 @@ interface Exchange {
     exchangeRequestedAt: string;
 }
 
+const getLocalStorage = (key: string) => {
+    if (typeof window !== 'undefined') {
+      return localStorage.getItem(key);
+    }
+    return null;
+  };
+
 export default function Page() {
     const [products, setProducts] = useState<Product[]>([]);
     const [exchanges, setExchanges] = useState<Exchange[]>([]);
@@ -46,8 +53,8 @@ export default function Page() {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const token = localStorage.getItem("token");
-                const userId = localStorage.getItem("userId");
+                const token = getLocalStorage('token');
+                const userId = getLocalStorage('userId');
 
                 // Fetch products
                 const productsResponse = await fetch(`${config.apiBaseUrl}/api/v1/product/user`, {

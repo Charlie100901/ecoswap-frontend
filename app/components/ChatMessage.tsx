@@ -12,6 +12,13 @@ interface ChatMessage {
   exchange: { id: number };
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function ChatDropdown() {
   const [isModalChatOpen, setIsModalChatOpen] = useState(false);
   const [chats, setChats] = useState<ChatMessage[]>([]);
@@ -22,7 +29,8 @@ export default function ChatDropdown() {
 
   useEffect(() => {
     const fetchChats = async () => {
-      const userId = localStorage.getItem("userId");
+      const userId = getLocalStorage('userId');
+
       if (!userId) return;
 
       try {
@@ -60,7 +68,8 @@ export default function ChatDropdown() {
 
   const fetchActiveChatMessages = async (chat: ChatMessage) => {
     try {
-      const userId = Number(localStorage.getItem("userId"));
+      const userId = Number(getLocalStorage("userId"));
+
       const response = await fetch(
         `${config.apiBaseUrl}/api/v1/chat/message?sender=${chat.sender.id}&receiver=${userId}`
       );
@@ -106,7 +115,7 @@ export default function ChatDropdown() {
 
     try {
       const newMessage = {
-        senderId: localStorage.getItem("userId"),
+        senderId: getLocalStorage("userId"),
         receiverId: activeChat.sender.id,
         content,
         exchangeId: activeChat.exchange.id,
@@ -119,7 +128,7 @@ export default function ChatDropdown() {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${getLocalStorage("token")}`,
           },
           body: JSON.stringify(newMessage),
         }

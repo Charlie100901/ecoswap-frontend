@@ -18,6 +18,13 @@ interface Product {
   user: { id: number; name: string };
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function ExchangeView() {
   const [exchangeProduct, setExchangeProduct] = useState<{ productFrom: Product; productTo: Product; id: number } | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -25,7 +32,7 @@ export default function ExchangeView() {
 
   const handleCancelExchange = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getLocalStorage("token");
       const response = await fetch(`${config.apiBaseUrl}/api/v1/${exchangeId}/cancel`, {
         method: 'POST',
         headers: {
@@ -45,7 +52,8 @@ export default function ExchangeView() {
 
   const handleProductReceived = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const token = getLocalStorage("token");
+
       const response = await fetch(`${config.apiBaseUrl}/api/v1/${exchangeId}/confirm`, {
         method: 'POST',
         headers: {
@@ -65,7 +73,7 @@ export default function ExchangeView() {
   };
 
   useEffect(() => {
-    const storedExchangeProduct = localStorage.getItem('exchangeProduct');
+    const storedExchangeProduct = getLocalStorage('exchangeProduct');
     if (storedExchangeProduct) {
       setExchangeProduct(JSON.parse(storedExchangeProduct));
     } else {

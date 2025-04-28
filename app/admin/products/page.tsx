@@ -18,6 +18,13 @@ interface ApiResponse {
   products: Product[]; 
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function Page() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -31,7 +38,7 @@ export default function Page() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = getLocalStorage('token');
         if (!token) {
           throw new Error('No se encontró el token de autenticación');
         }
@@ -64,7 +71,7 @@ export default function Page() {
     if (productToDelete === null) return;
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
       if (!token) {
         throw new Error('No se encontró el token de autenticación');
       }

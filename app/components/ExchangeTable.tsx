@@ -51,6 +51,14 @@ interface PredictionResult {
   confidenceLevel: string
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
+
 export default function ExchangeTable() {
   const [exchanges, setExchanges] = useState<ExchangeDTO[]>([]);
   const [loading, setLoading] = useState(true);
@@ -68,7 +76,8 @@ export default function ExchangeTable() {
         };
 
         if (typeof window !== 'undefined') {
-          const token = localStorage.getItem('token');
+          const token = getLocalStorage('token');
+
           if (token) {
             headers['Authorization'] = `Bearer ${token}`;
           }
@@ -110,7 +119,8 @@ export default function ExchangeTable() {
         exchangeRespondedAt: exchange.exchangeRespondedAt || exchange.exchangeRequestedAt
       };
 
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
+
       const response = await fetch(`${config.apiBaseUrl}/api/v1/prediction`, {
         method: 'POST',
         headers: {

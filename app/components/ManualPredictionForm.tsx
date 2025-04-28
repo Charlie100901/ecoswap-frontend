@@ -13,6 +13,14 @@ interface ManualPredictionFormProps {
   onPredictionResult: (result: PredictionResult) => void;
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
+
 export default function ManualPredictionForm({ onPredictionResult }: ManualPredictionFormProps) {
   const [formData, setFormData] = useState({
     productToId: '',
@@ -29,7 +37,7 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const token = localStorage.getItem('token');
+        const token = getLocalStorage('token');
         const response = await fetch(`${config.apiBaseUrl}/api/v1/product`, {
           headers: {
             'Authorization': `Bearer ${token}`
@@ -63,7 +71,7 @@ export default function ManualPredictionForm({ onPredictionResult }: ManualPredi
     setError(null);
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
       const response = await fetch(`${config.apiBaseUrl}/api/v1/prediction-manual`, {
         method: 'POST',
         headers: {

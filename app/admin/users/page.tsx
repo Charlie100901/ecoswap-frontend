@@ -15,6 +15,13 @@ interface User {
   password: string;
 }
 
+const getLocalStorage = (key: string) => {
+  if (typeof window !== 'undefined') {
+    return localStorage.getItem(key);
+  }
+  return null;
+};
+
 export default function Page() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -36,7 +43,8 @@ export default function Page() {
 
   const fetchUsers = async () => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
+
       if (!token) {
         throw new Error('No se encontró el token de autenticación');
       }
@@ -69,7 +77,8 @@ export default function Page() {
     const method = isEditing ? 'PUT' : 'POST';
 
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
+
       if (!token) throw new Error('No se encontró el token de autenticación');
 
       const response = await fetch(url, {
@@ -94,7 +103,8 @@ export default function Page() {
 
   const handleDelete = async (id: number) => {
     try {
-      const token = localStorage.getItem('token');
+      const token = getLocalStorage('token');
+
       if (!token) throw new Error('No se encontró el token de autenticación');
 
       const response = await fetch(`${config.apiBaseUrl}/api/v1/user/${id}`, {
