@@ -145,7 +145,7 @@ export default function ChatDropdown() {
   };
 
   return (
-    <div className="relative">
+    <div className="relative ">
       {/* Botón de Chat */}
       <button
         onClick={() => setIsModalChatOpen(!isModalChatOpen)}

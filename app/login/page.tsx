@@ -4,9 +4,9 @@ import { useState, ChangeEvent, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import Link from "next/link";
-import config from '@/config';
+import config from "@/config";
 import { ToastContainer, toast } from "react-toastify";
-
+import Cookies from "js-cookie";
 
 export default function Page() {
   const [email, setEmail] = useState<string>("");
@@ -19,11 +19,10 @@ export default function Page() {
       const timer = setTimeout(() => {
         setError(null);
       }, 3000);
-  
+
       return () => clearTimeout(timer);
     }
   }, [error]);
-  
 
   const handleLogin = async () => {
     try {
@@ -41,13 +40,18 @@ export default function Page() {
       if (response.ok) {
         const data = await response.json();
         localStorage.setItem("token", data.jwt);
+
+        Cookies.set("token", data.jwt, {
+          path: "/",
+          sameSite: "Lax",
+        });
         router.push("/");
       } else {
         setError("Correo o contraseña incorrectos.");
-        toast.error("Correo o contraseña incorrectos",{
+        toast.error("Correo o contraseña incorrectos", {
           theme: "colored",
-          position: "top-right"
-        })
+          position: "top-right",
+        });
       }
     } catch (error) {
       setError("Ocurrió un error, por favor intenta nuevamente.");
@@ -75,8 +79,6 @@ export default function Page() {
         <h2 className="text-2xl font-bold text-gray-800 mb-4">
           Iniciar Sesión
         </h2>
-
-        
 
         <div className="mb-4">
           <label htmlFor="email" className="block text-gray-700 mb-1">
