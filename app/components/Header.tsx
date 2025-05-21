@@ -31,7 +31,7 @@ export default function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isModalNotificationOpen, setIsModalNotificationOpen] = useState(false);
- 
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -114,7 +114,7 @@ export default function Header() {
     };
   }, []);
 
-  
+
 
   useEffect(() => {
     if (
@@ -129,7 +129,7 @@ export default function Header() {
     }
   }, []);
 
-  
+
 
   const handleDarkModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
@@ -251,20 +251,18 @@ export default function Header() {
           </div>
 
           <div
-            className={`${
-              isMenuOpen ? "block" : "hidden"
-            } w-full lg:flex lg:w-auto `}
+            className={`${isMenuOpen ? "block" : "hidden"
+              } w-full lg:flex lg:w-auto `}
             id="mobile-menu-2"
           >
             <ul className="flex flex-col mt-4 lg:flex-row lg:space-x-8 lg:mt-0">
               <li>
                 <Link
                   href="/"
-                  className={`block py-2 px-3 rounded md:p-0 ${
-                    isActiveLink("/")
+                  className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/")
                       ? "text-green-600 font-bold dark:text-green-400"
                       : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                  }`}
+                    }`}
                 >
                   Inicio
                 </Link>
@@ -272,11 +270,10 @@ export default function Header() {
               <li>
                 <Link
                   href="/product"
-                  className={`block py-2 px-3 rounded md:p-0 ${
-                    isActiveLink("/product")
+                  className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/product")
                       ? "text-green-600 font-bold dark:text-green-400"
                       : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                  }`}
+                    }`}
                   aria-current="page"
                 >
                   Ver Productos
@@ -286,13 +283,23 @@ export default function Header() {
                 <Link
                   href="/UploadProduct"
                   onClick={handlePublishClick}
-                  className={`block py-2 px-3 rounded md:p-0 ${
-                    isActiveLink("/UploadProduct")
+                  className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/UploadProduct")
                       ? "text-green-600 font-bold dark:text-green-400"
                       : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                  }`}
+                    }`}
                 >
                   Publicar Producto
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href="/about"
+                  className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/about")
+                      ? "text-green-600 font-bold dark:text-green-400"
+                      : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
+                    }`}
+                >
+                  Quiénes Somos
                 </Link>
               </li>
               {isAdmin && (
@@ -300,23 +307,21 @@ export default function Header() {
                   <li>
                     <Link
                       href="/admin/dashboard"
-                      className={`block py-2 px-3 rounded md:p-0 ${
-                        isActiveLink("/admin/dashboard")
+                      className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/admin/dashboard")
                           ? "text-green-600 font-bold dark:text-green-400"
                           : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                      }`}
+                        }`}
                     >
                       Dashboard
                     </Link>
                   </li>
                   <li>
-                  <Link
+                    <Link
                       href={`/admin/exchanges`}
-                      className={`block py-2 px-3 rounded md:p-0 ${
-                        isActiveLink("/admin/exchanges")
+                      className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/admin/exchanges")
                           ? "text-green-600 font-bold dark:text-green-400"
                           : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                      }`}
+                        }`}
                     >
                       Predicción
                     </Link>
@@ -324,11 +329,10 @@ export default function Header() {
                   <li>
                     <Link
                       href={`/admin/users`}
-                      className={`block py-2 px-3 rounded md:p-0 ${
-                        isActiveLink("/admin/users")
+                      className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/admin/users")
                           ? "text-green-600 font-bold dark:text-green-400"
                           : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                      }`}
+                        }`}
                     >
                       Usuarios
                     </Link>
@@ -336,11 +340,10 @@ export default function Header() {
                   <li>
                     <Link
                       href="/admin/products"
-                      className={`block py-2 px-3 rounded md:p-0 ${
-                        isActiveLink("/admin/products")
+                      className={`block py-2 px-3 rounded md:p-0 ${isActiveLink("/admin/products")
                           ? "text-green-600 font-bold dark:text-green-400"
                           : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
-                      }`}
+                        }`}
                     >
                       Productos
                     </Link>
@@ -527,7 +530,7 @@ export default function Header() {
             )}
           </div>
         </div>
-        <ToastContainer/>
+        <ToastContainer />
       </nav>
     </header>
   );

@@ -169,7 +169,7 @@ export default function Page() {
         <div className="overflow-x-auto">
           <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow">
             <thead>
-              <tr className="bg-blue-100 dark:bg-zinc-600 border-b-2 border-blue-200 dark:border-zinc-500">
+              <tr className="bg-gray-200 dark:bg-zinc-600 border-b-2 border-gray-100 dark:border-zinc-500">
                 <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Título</th>
                 <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Descripción</th>
                 <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Categoría</th>
@@ -186,7 +186,7 @@ export default function Page() {
                 </tr>
               ) : (
                 filteredProducts.map((product) => (
-                  <tr key={product.id} className="border-b dark:border-zinc-600">
+                  <tr key={product.id} className="border-b dark:border-zinc-600 hover:bg-gray-100 dark:hover:bg-zinc-600">
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.title}</td>
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white whitespace-normal break-words max-w-prose">{product.description}</td>
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.category}</td>

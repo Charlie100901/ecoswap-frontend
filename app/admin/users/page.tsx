@@ -182,18 +182,18 @@ export default function Page() {
         />
 
         <div className="overflow-x-auto">
-          <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow">
+          <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow ">
             <thead>
-              <tr className="bg-blue-100 dark:bg-zinc-600 border-b-2 border-blue-200 dark:border-zinc-500">
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">id</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Nombre</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Correo Electrónico</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Dirección</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Teléfono</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Acciones</th>
+              <tr className="bg-gray-200 dark:bg-zinc-600 border-b-2 border-gray-100 dark:border-zinc-500 ">
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">id</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">Nombre</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">Correo Electrónico</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">Dirección</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">Teléfono</th>
+                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white ">Acciones</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className=''>
               {filteredUsers.length === 0 ? (
                 <tr>
                   <td colSpan={5} className="text-center py-4 text-gray-500 dark:text-gray-400">
@@ -202,7 +202,7 @@ export default function Page() {
                 </tr>
               ) : (
                 filteredUsers.map((user) => (
-                  <tr key={user.id} className="border-b dark:border-zinc-600">
+                  <tr key={user.id} className="border-b dark:border-zinc-600 hover:bg-gray-50 dark:hover:bg-zinc-600">
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.id}</td>
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.name}</td>
                     <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{user.email}</td>

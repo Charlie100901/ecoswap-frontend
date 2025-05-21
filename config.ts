@@ -1,5 +1,5 @@
 const config = {
-    apiBaseUrl: "https://ecoswap-backend.onrender.com", 
+    apiBaseUrl: "http://localhost:8080", 
   };
   
   export default config;
