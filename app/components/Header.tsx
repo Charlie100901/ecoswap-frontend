@@ -31,6 +31,7 @@ export default function Header() {
   const [notifications, setNotifications] = useState<any[]>([]);
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isModalNotificationOpen, setIsModalNotificationOpen] = useState(false);
+  const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
  
   const router = useRouter();
   const pathname = usePathname();
@@ -188,7 +189,7 @@ export default function Header() {
   return (
     <header className="flex items-center justify-between px-4 py-2 bg-white dark:bg-gray-900 sticky top-0 z-50">
       <nav className="bg-white border-gray-200 shadow-md dark:bg-gray-900 w-full ">
-        <div className="max-w-screen-xl flex flex-wrap items-center justify-between mx-auto p-4 ">
+        <div className="max-w-screen-2xl flex flex-wrap items-center justify-between mx-auto py-4 px-7 ">
           <Link
             href="/"
             className="flex items-center space-x-3 rtl:space-x-reverse"
@@ -350,7 +351,7 @@ export default function Header() {
             </ul>
           </div>
 
-          <label className="inline-flex items-center relative mr-2 ">
+          <label className="inline-flex items-center relative mr-2 hidden md:flex">
             <input
               className="peer hidden"
               id="toggle"
@@ -387,7 +388,9 @@ export default function Header() {
             {userName ? (
               <>
                 <div className="relative group">
-                  <div className="flex items-center dark:hover:bg-black hover:bg-gray-100 hover:rounded hover:cursor-pointer p-2">
+                  <div className="flex items-center dark:hover:bg-black hover:bg-gray-100 hover:rounded hover:cursor-pointer p-2"
+                  onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
+                  >
                     <span className="text-gray-900 mt-2 mr-2 dark:text-white">
                       {userName.toUpperCase()}
                     </span>
@@ -399,7 +402,7 @@ export default function Header() {
                           alt="Arrow Down"
                           width={20}
                           height={20}
-                        />
+                        />  
                       </>
                     ) : (
                       <>
@@ -414,7 +417,8 @@ export default function Header() {
                   </div>
 
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                    <ul className="py-2">
+                    <ul className="py-2"
+                    >
                       <li className="px-4 py-2 hover:bg-gray-100">
                         <Link
                           href="/profile"
@@ -465,7 +469,7 @@ export default function Header() {
 
                   {/* Cuadro desplegable de notificaciones */}
                   {isModalNotificationOpen && (
-                    <div className="absolute right-0 mt-2 w-96 bg-white dark:bg-gray-900 rounded-md shadow-lg z-50">
+                    <div className="absolute right-0 mt-2  bg-white dark:bg-gray-900 rounded-md shadow-lg z-50  xl:w-96 sm:max-w-2xl">
                       <div className="flex justify-between items-center border-b pb-2 px-4 py-2">
                         <h2 className="text-lg font-semibold text-gray-900 dark:text-white">
                           Notificaciones

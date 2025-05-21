@@ -6,7 +6,7 @@ import Footer from "../components/Footer";
 import Link from "next/link";
 import ProductCard from "../components/ProductCard";
 import ProductCardSkeleton from "../components/ProductCardSkeleton";
-import config from '@/config';
+import config from "@/config";
 
 interface Product {
   id: number;
@@ -198,21 +198,38 @@ export default function Page() {
     <div className="dark:bg-zinc-800">
       <Header />
       <div className="container mx-auto p-4 mb-[100px] mt-6">
-        <h1
-          className="text-center text-3xl font-bold mb-6 dark:text-white animate-fade-down"
-        >
+        <h1 className="text-center text-3xl font-bold mb-6 dark:text-white animate-fade-down">
           ENCUENTRA LO QUE NECESITAS
         </h1>
 
         <div className="flex flex-col md:flex-row">
-          <aside className="md:w-1/4 p-4 mr-[20px] bg-white dark:bg-zinc-800 rounded-lg shadow-lg mb-4 md:mb-0 border border-gray-200 dark:border-gray-700 animate-fade-up">
+          <aside className="w-full md:w-1/4 p-4 mr-[20px] bg-white dark:bg-zinc-800 rounded-lg shadow-lg mb-4 md:mb-0 border border-gray-200 dark:border-gray-700 animate-fade-up">
             <h3
-              className="font-bold text-lg mb-4 dark:text-gray-300 cursor-pointer md:hidden"
+              className="font-bold text-lg mb-4 dark:text-gray-300 cursor-pointer md:hidden flex items-center"
               onClick={() => setIsCategoriesOpen(!isCategoriesOpen)}
             >
               Categorías
+              <svg
+                className={`ml-48 w-5 h-5 transition-transform duration-200 ${
+                  isCategoriesOpen ? "rotate-180" : ""
+                }`}
+                fill="none"
+                stroke="currentColor"
+                strokeWidth={2}
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
             </h3>
-            <ul className={`space-y-2 ${isCategoriesOpen ? "block" : "hidden"} md:block`}>
+            <ul
+              className={`space-y-2 ${
+                isCategoriesOpen ? "block" : "hidden"
+              } md:block`}
+            >
               <li>
                 <button
                   onClick={() => {
