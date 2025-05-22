@@ -14,7 +14,7 @@ interface DecodedToken {
 }
 
 const getLocalStorage = (key: string) => {
-  if (typeof window !== 'undefined') {
+  if (typeof window !== "undefined") {
     return localStorage.getItem(key);
   }
   return null;
@@ -32,7 +32,7 @@ export default function Header() {
   const [stompClient, setStompClient] = useState<Client | null>(null);
   const [isModalNotificationOpen, setIsModalNotificationOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
- 
+
   const router = useRouter();
   const pathname = usePathname();
 
@@ -115,8 +115,6 @@ export default function Header() {
     };
   }, []);
 
-  
-
   useEffect(() => {
     if (
       localStorage.getItem("theme") === "dark" ||
@@ -129,8 +127,6 @@ export default function Header() {
       document.documentElement.classList.remove("dark");
     }
   }, []);
-
-  
 
   const handleDarkModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
@@ -149,7 +145,7 @@ export default function Header() {
   const handleLogout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("userName");
-    localStorage.removeItem("userId")
+    localStorage.removeItem("userId");
     setUserName(null);
     setIsAdmin(false);
     router.push("/");
@@ -162,8 +158,8 @@ export default function Header() {
       e.preventDefault();
       toast.error("Debes iniciar sesión para publicar un producto", {
         theme: "colored",
-        position: "top-right"
-      })
+        position: "top-right",
+      });
       // router.push("/login");
     }
   };
@@ -234,9 +230,7 @@ export default function Header() {
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
-                ></path>
+                <path d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"></path>
               </svg>
               <svg
                 className={`w-6 h-6 ${isMenuOpen ? "block" : "hidden"}`}
@@ -244,9 +238,7 @@ export default function Header() {
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
               >
-                <path
-                  d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
-                ></path>
+                <path d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"></path>
               </svg>
             </button>
           </div>
@@ -296,6 +288,21 @@ export default function Header() {
                   Publicar Producto
                 </Link>
               </li>
+              {(!isAdmin || !userName) && (
+                <li>
+                  <Link
+                    href="/about"
+                    className={`block py-2 px-3 rounded md:p-0 ${
+                      isActiveLink("/about")
+                        ? "text-green-600 font-bold dark:text-green-400"
+                        : "text-black dark:text-white hover:text-green-600 dark:hover:text-green-400"
+                    }`}
+                  >
+                    Acerca de nosotros
+                  </Link>
+                </li>
+              )}
+
               {isAdmin && (
                 <>
                   <li>
@@ -311,7 +318,7 @@ export default function Header() {
                     </Link>
                   </li>
                   <li>
-                  <Link
+                    <Link
                       href={`/admin/exchanges`}
                       className={`block py-2 px-3 rounded md:p-0 ${
                         isActiveLink("/admin/exchanges")
@@ -388,8 +395,9 @@ export default function Header() {
             {userName ? (
               <>
                 <div className="relative group">
-                  <div className="flex items-center dark:hover:bg-black hover:bg-gray-100 hover:rounded hover:cursor-pointer p-2"
-                  onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
+                  <div
+                    className="flex items-center dark:hover:bg-black hover:bg-gray-100 hover:rounded hover:cursor-pointer p-2"
+                    onClick={() => setIsProfileDropdownOpen((prev) => !prev)}
                   >
                     <span className="text-gray-900 mt-2 mr-2 dark:text-white">
                       {userName.toUpperCase()}
@@ -402,7 +410,7 @@ export default function Header() {
                           alt="Arrow Down"
                           width={20}
                           height={20}
-                        />  
+                        />
                       </>
                     ) : (
                       <>
@@ -417,8 +425,7 @@ export default function Header() {
                   </div>
 
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 z-10">
-                    <ul className="py-2"
-                    >
+                    <ul className="py-2">
                       <li className="px-4 py-2 hover:bg-gray-100">
                         <Link
                           href="/profile"
@@ -531,7 +538,7 @@ export default function Header() {
             )}
           </div>
         </div>
-        <ToastContainer/>
+        <ToastContainer />
       </nav>
     </header>
   );
