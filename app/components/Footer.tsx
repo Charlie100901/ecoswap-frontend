@@ -47,7 +47,7 @@ export default function Footer() {
             <Link href="/UploadProduct" className="text-zinc-300 hover:text-green-400 transition-colors">
               Publicar Producto
             </Link>
-            <Link href="/sobre-nosotros" className="text-zinc-300 hover:text-green-400 transition-colors">
+            <Link href="/about" className="text-zinc-300 hover:text-green-400 transition-colors">
               Sobre Nosotros
             </Link>
             {/* <Link href="/blog" className="text-zinc-300 hover:text-green-400 transition-colors">
@@ -77,7 +77,7 @@ export default function Footer() {
         <div className="space-y-4">
           <h3 className="text-lg font-semibold">Suscríbete al Newsletter</h3>
           <p className="text-zinc-300 text-sm">Recibe las últimas noticias sobre sostenibilidad y nuevos productos.</p>
-          <form className="flex flex-col gap-2" onSubmit={(e) => e.preventDefault()}>
+          <form className="flex flex-col gap-2" >
             <input
               type="email"
               placeholder="Tu correo electrónico"
