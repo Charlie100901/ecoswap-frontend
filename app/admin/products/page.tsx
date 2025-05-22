@@ -133,18 +133,18 @@ export default function Page() {
           Panel de Productos
         </h1>
 
-        <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
           <input
             type="text"
             placeholder="Buscar por título o descripción"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="mb-2 sm:mb-0 p-2 border border-gray-300 rounded w-full sm:w-1/3"
+            className="p-3 border border-gray-300 dark:border-zinc-600 rounded-lg w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-green-400 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white shadow"
           />
           <select
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="mb-2 sm:mb-0 p-2 border border-gray-300 rounded w-full sm:w-1/3 sm:ml-2"
+            className="p-3 border border-gray-300 dark:border-zinc-600 rounded-lg w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white shadow"
           >
             <option value="">Todas las Categorías</option>
             <option value="Electrónica y Tecnología">Electrónica y Tecnología</option>
@@ -153,12 +153,11 @@ export default function Page() {
             <option value="Mascotas">Mascotas</option>
             <option value="Ropa y Accesorios">Ropa y Accesorios</option>
             <option value="Deportes y Aire Libre">Deportes y Aire Libre</option>
-
           </select>
           <select
             value={filterCondition}
             onChange={(e) => setFilterCondition(e.target.value)}
-            className="p-2 border border-gray-300 rounded w-full sm:w-1/3 sm:ml-2"
+            className="p-3 border border-gray-300 dark:border-zinc-600 rounded-lg w-full sm:w-1/3 focus:outline-none focus:ring-2 focus:ring-purple-400 bg-gray-50 dark:bg-zinc-800 text-gray-800 dark:text-white shadow"
           >
             <option value="">Todas las Condiciones</option>
             <option value="nuevo">Nuevo</option>
@@ -166,44 +165,61 @@ export default function Page() {
           </select>
         </div>
 
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white dark:bg-zinc-700 border border-gray-200 dark:border-zinc-600 rounded-lg shadow">
-            <thead>
-              <tr className="bg-blue-100 dark:bg-zinc-600 border-b-2 border-blue-200 dark:border-zinc-500">
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Título</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Descripción</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Categoría</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Condición</th>
-                <th className="py-2 px-4 text-left text-sm font-semibold text-gray-800 dark:text-white">Acciones</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filteredProducts.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="text-center py-4 text-gray-500 dark:text-gray-400">
-                    No hay productos disponibles
-                  </td>
+        <div className="overflow-x-auto flex justify-center">
+          <div className="w-full max-w-5xl">
+            <table className="min-w-full bg-white dark:bg-zinc-800 border-separate border-spacing-0 rounded-xl shadow-xl">
+              <thead className="sticky top-0 z-10">
+                <tr className="bg-gradient-to-r from-green-500 to-blue-500 dark:from-zinc-700 dark:to-zinc-600 text-white">
+                  <th className="py-3 px-5 text-left text-sm font-bold rounded-tl-xl">Título</th>
+                  <th className="py-3 px-5 text-left text-sm font-bold">Descripción</th>
+                  <th className="py-3 px-5 text-left text-sm font-bold">Categoría</th>
+                  <th className="py-3 px-5 text-left text-sm font-bold">Condición</th>
+                  <th className="py-3 px-5 text-left text-sm font-bold rounded-tr-xl">Acciones</th>
                 </tr>
-              ) : (
-                filteredProducts.map((product) => (
-                  <tr key={product.id} className="border-b dark:border-zinc-600">
-                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.title}</td>
-                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white whitespace-normal break-words max-w-prose">{product.description}</td>
-                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.category}</td>
-                    <td className="py-3 px-4 text-sm text-gray-800 dark:text-white">{product.conditionProduct}</td>
-                    <td className="py-3 px-4 flex space-x-2">
-                      <button
-                        onClick={() => openModal(product.id)}
-                        className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-3 rounded text-sm"
-                      >
-                        Eliminar
-                      </button>
+              </thead>
+              <tbody>
+                {filteredProducts.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="text-center py-6 text-gray-500 dark:text-gray-400">
+                      No hay productos disponibles
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  filteredProducts.map((product, idx) => (
+                    <tr
+                      key={product.id}
+                      className={`transition-colors duration-200 ${
+                        idx % 2 === 0
+                          ? 'bg-gray-50 dark:bg-zinc-700'
+                          : 'bg-white dark:bg-zinc-800'
+                      } hover:bg-green-50 dark:hover:bg-zinc-600`}
+                    >
+                      <td className="py-3 px-5 text-sm text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-700">
+                        {product.title}
+                      </td>
+                      <td className="py-3 px-5 text-sm text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-700 whitespace-normal break-words max-w-prose">
+                        {product.description}
+                      </td>
+                      <td className="py-3 px-5 text-sm text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-700">
+                        {product.category}
+                      </td>
+                      <td className="py-3 px-5 text-sm text-gray-800 dark:text-white border-b border-gray-200 dark:border-zinc-700">
+                        {product.conditionProduct}
+                      </td>
+                      <td className="py-3 px-5 flex space-x-2 border-b border-gray-200 dark:border-zinc-700">
+                        <button
+                          onClick={() => openModal(product.id)}
+                          className="bg-gradient-to-r from-red-500 to-red-700 hover:from-red-600 hover:to-red-800 text-white font-bold py-1 px-4 rounded shadow transition-all duration-150"
+                        >
+                          Eliminar
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
 
