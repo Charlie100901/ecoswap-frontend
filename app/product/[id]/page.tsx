@@ -220,6 +220,7 @@ export default function Page({ params }: { params: { id: string } }) {
     }
 
     const handleIntercambio = () => {
+        if(!localStorage.getItem("token")) return router.push('/login');
         router.push(`/UploadProduct?productTo=${product.id}`);
     };
 

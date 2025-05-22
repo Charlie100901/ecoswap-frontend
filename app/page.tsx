@@ -92,8 +92,8 @@ export default function Home() {
             transition={{ duration: 1 }}
           >
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold mb-4">
-              <span className="block">Intercambia lo que Tienes,</span>
-              <span className="block">Obtén lo que Necesitas</span>
+              <span className="block uppercase">Intercambia lo que tienes,</span>
+              <span className="block uppercase">obtén lo que necesitas</span>
             </h1>
             <Link href="/product">
               <button
@@ -117,7 +117,7 @@ export default function Home() {
         </div>
 
         <div className="py-10 px-4 sm:px-6 lg:px-8">
-          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 text-center dark:text-white animate-fade-up">
+          <h2 className="text-xl sm:text-2xl lg:text-3xl font-bold mb-6 text-center dark:text-white animate-fade-up uppercase">
             Productos Subidos Recientemente
           </h2>
           <div
