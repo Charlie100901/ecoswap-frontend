@@ -27,6 +27,24 @@ html{
   background: #555;
 }
 
+/* Utilidades para el truncado de texto */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Animaciones suaves para los componentes de intercambio */
+.exchange-item-hover {
+  transition: all 0.2s ease-in-out;
+}
+
+.exchange-item-hover:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 
 /* tailwind css v4.x */
 /* @import "tailwindcss";
