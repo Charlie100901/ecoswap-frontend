@@ -6,12 +6,15 @@ import Footer from '../../components/Footer';
 import { useRouter } from 'next/navigation';
 import config from '@/config';
 import { X } from 'lucide-react';
+import ExchangeCreator from '../../components/ExchangeCreator';
+import { Product as ServiceProduct } from '../../services/productService';
 
 interface User {
     id: number;
     name: string;
     email: string;
     address: string;
+    cellphoneNumber?: string;
 }
 
 interface Product {
@@ -52,6 +55,7 @@ export default function Page({ params }: { params: { id: string } }) {
     const [fadeIn, setFadeIn] = useState<boolean>(false);
     const [showConfirmationModal, setShowConfirmationModal] = useState(false);
     const [selectedExchange, setSelectedExchange] = useState<ExchangeProduct | null>(null);
+    const [showExchangeCreator, setShowExchangeCreator] = useState<boolean>(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -221,7 +225,33 @@ export default function Page({ params }: { params: { id: string } }) {
 
     const handleIntercambio = () => {
         if(!localStorage.getItem("token")) return router.push('/login');
-        router.push(`/UploadProduct?productTo=${product.id}`);
+        setShowExchangeCreator(true);
+    };
+
+    const handleExchangeCreated = (exchange: any) => {
+        console.log('Intercambio creado:', exchange);
+        setShowExchangeCreator(false);
+        // Mostrar mensaje de éxito o redirigir
+        router.push('/profile');
+    };
+
+    const convertProductToServiceProduct = (product: Product): ServiceProduct => {
+        return {
+            id: product.id,
+            title: product.title,
+            description: product.description,
+            imageProduct: product.imageProduct,
+            category: product.category,
+            conditionProduct: product.conditionProduct,
+            releaseDate: product.releaseDate,
+            user: {
+                id: product.user.id,
+                name: product.user.name,
+                email: product.user.email,
+                address: product.user.address,
+                cellphoneNumber: product.user.cellphoneNumber || ''
+            }
+        };
     };
 
     return (
@@ -328,6 +358,19 @@ export default function Page({ params }: { params: { id: string } }) {
             </div>
             <Footer />
             <ConfirmationModal />
+            
+            {/* Modal de ExchangeCreator */}
+            {showExchangeCreator && product && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-gray-800 rounded-lg max-w-6xl w-full max-h-[90vh] overflow-y-auto">
+                        <ExchangeCreator
+                            targetProduct={convertProductToServiceProduct(product)}
+                            onExchangeCreated={handleExchangeCreated}
+                            onClose={() => setShowExchangeCreator(false)}
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

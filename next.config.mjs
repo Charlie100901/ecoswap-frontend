@@ -7,6 +7,12 @@ const nextConfig = {
             hostname: 'ecoswap-backend.onrender.com',
             pathname: '/images/**', 
           },
+          {
+            protocol: 'http',
+            hostname: 'localhost',
+            port: '8080',
+            pathname: '/images/**',
+          },
         ],
       },
     
