@@ -79,7 +79,7 @@ export default function ExchangeCreator({ targetProduct, onExchangeCreated, onCl
   };
 
   const handleCreateNewProduct = () => {
-    router.push(`/UploadProduct?productTo=${targetProduct.id}`);
+    router.push(`/UploadProduct?productTo=${targetProduct.id}&userTo=${targetProduct.user.id}`);
   };
 
   return (
