@@ -25,6 +25,7 @@ const getLocalStorage = (key: string) => {
 function ProductForm() {
     const searchParams = useSearchParams();
     const productTo = searchParams.get('productTo');
+    const userTo = searchParams.get('userTo');
     
     const [formData, setFormData] = useState<FormData>({
         title: '',
@@ -78,16 +79,19 @@ function ProductForm() {
             if (response.ok) {
                 const newProduct = await response.json();
                 
-                if (productTo) {
-                    await fetch(`${config.apiBaseUrl}/api/v1/create-exchange`, {
+                if (productTo && userTo) {
+                    const userId = getLocalStorage('userId');
+                    await fetch(`${config.apiBaseUrl}/api/v1/create-exchange-new-product`, {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`,
                             'Content-Type': 'application/json'
                         },
                         body: JSON.stringify({
-                            productFrom: { id: newProduct.id },
-                            productTo: { id: productTo }
+                            productFromId: newProduct.id,
+                            productToId: parseInt(productTo),
+                            userFromId: parseInt(userId || '0'),
+                            userToId: parseInt(userTo)
                         })
                     });
                 }
